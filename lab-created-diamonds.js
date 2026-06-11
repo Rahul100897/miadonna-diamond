@@ -780,7 +780,7 @@ window.LB_GROWN_DIAMOND = function () {
                                     htmlList = '';
                                     // ${videoURL?.length > 0 ? "" : 'style="background-image: url(' + mainImageURL + ');"'}
                                     const dynamic_id = `pro-data-${diamondsArray.vdb_stock_id}`;
-                                      htmlList += `<tr class="vdb-lb-view-btn open-filter-btn" id="${dynamic_id}-list" data-producthandle="${staticHandle1}"  data-href="/products/${staticHandle}?${productURL}&dyo=diamond_journey${window.LB_GROWN_DIAMOND.getUrlParameter('ring-handle') !== undefined ? '': '#ring-products-section'}" data-id="${dynamic_id}" data-video="${videoURL}" data-display="true">
+                                      htmlList += `<tr class="vdb-lb-view-btn open-filter-btn" id="${dynamic_id}-list" data-producthandle="${staticHandle1}" data-sku="${diamondsArray?.shopify_sku}" data-href="/products/${staticHandle}?${productURL}&dyo=diamond_journey${window.LB_GROWN_DIAMOND.getUrlParameter('ring-handle') !== undefined ? '': '#ring-products-section'}" data-id="${dynamic_id}" data-video="${videoURL}" data-display="true">
                                         <td class="shape">
                                             <textarea id="product-${diamondsArray?.shopify_variant_id}" style="display:none;">${JSON.stringify(diamondsArray)}</textarea>
                                             <div class="shape-icon-container">
@@ -1544,14 +1544,17 @@ window.LB_GROWN_DIAMOND = function () {
                 }
             }
         },
-        callProductDiamondDetail: async function (handle) {
+        callProductDiamondDetail: async function (sku) {
             try {
 
-                const response = await fetch(`/products/${handle}?view=json`);
-
+                // OLD (Shopify admin product JSON, by handle):
+                //const response = await fetch(`/products/${handle}?view=json`);
+                //const productData = await response.json();
+                //return productData;
+                // NEW (qd-app product detail API, by SKU - HTTP Basic auth):
+                const response = await fetch(`http://localhost/qd-app/items/${sku}`, { headers: { 'Authorization': 'Basic ' + btoa('admin:123456') } });
                 const productData = await response.json();
-
-                return productData;
+                return productData?.data || null;
 
             } catch (error) {
                 console.log('error', error);
@@ -3859,8 +3862,12 @@ if(trdata){
          var certificateDelEls = document.querySelector( ".dmd-detail-filter")?.querySelectorAll(".certificate-del");
           var measurements = document.querySelector( ".dmd-detail-filter")?.querySelectorAll(".measurements");
 
-              var staticHandle = e.target.closest(".open-filter-btn").getAttribute("data-producthandle");
- var productData = await window.LB_GROWN_DIAMOND.callProductDiamondDetail(staticHandle);
+              // OLD (Shopify product by handle):
+              //var staticHandle = e.target.closest(".open-filter-btn").getAttribute("data-producthandle");
+              //var productData = await window.LB_GROWN_DIAMOND.callProductDiamondDetail(staticHandle);
+              // NEW (qd-app detail API by SKU):
+              var staticSku = e.target.closest(".open-filter-btn").getAttribute("data-sku");
+ var productData = await window.LB_GROWN_DIAMOND.callProductDiamondDetail(staticSku);
 certificateEls.forEach((el, index) => {
   el.innerHTML = '#'+productData.cert_num || "-";
 });
