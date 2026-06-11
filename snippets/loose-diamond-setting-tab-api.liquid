@@ -14,7 +14,7 @@
   {%- assign category_group = 'wedding' -%}
 {%- endif -%}
 {%- assign isStoneProduct = false -%}
-{%- if 'Lab Created Diamond Lab Created Gemstone Diamond Hybrid' contains product.type -%}
+{%- if product == blank or 'Lab Created Diamond Lab Created Gemstone Diamond Hybrid' contains product.type -%}
   {%- assign isStoneProduct = true -%}
 {%- endif -%}
 {%- assign added_ship_time = 0 -%}
@@ -39,7 +39,7 @@
   {%- assign measurementsTags = product.tags | where: 'measurements_' | last -%}
   {%- assign gemTypeTags = product.tags | where: 'gem_type_' | last -%}
   <div class="settings-header">
-    {% if product.type != 'Lab Created Diamond' %}
+    {% if product != blank and product.type != 'Lab Created Diamond' %}
       <div class="heading heading-shape">SHAPE</div>
       <div class="heading heading-carat">CARAT</div>
       <div class="heading heading-color">COLOR</div>
@@ -53,7 +53,7 @@
     {% endif %}
   </div>
   <div class="settings-values" id="diamond-lab-specs">
-    {% if product.type != 'Lab Created Diamond' %}
+    {% if product != blank and product.type != 'Lab Created Diamond' %}
       <div class="value heading-shape">
         {% if shapeTags.size > 0 %}
           {{- shapeTags | remove: 'shape_' | remove: '_cut' | replace: '_', ' ' -}}

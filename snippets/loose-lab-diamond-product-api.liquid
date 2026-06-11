@@ -1221,24 +1221,8 @@
   }
 
   document.addEventListener("DOMContentLoaded", async function () { 
-  const productId = '{{ product.id }}';
-  var formData = new FormData();
-    formData.append("action", "fetch_product_details_by_id");
-    formData.append("shop", Shopify.shop);
-    formData.append("product_id", productId);
-    fetch("/apps/vdb-maidonna-inventory-app/frontend.php", {
-      method: 'POST', body: formData
-    }).then(response => response.text())
-    .then(result => {
-      var resultArray = JSON.parse(result);
-      if (resultArray?.data?.cert_url?.length > 0) {
-        let openCertPopupPDPElements = document.getElementsByClassName('open-cert-popup-pdp');
-        openCertPopupPDPElements = Array.prototype.slice.call(openCertPopupPDPElements);
-        for (let i = 0; i < openCertPopupPDPElements.length; i++) {
-          openCertPopupPDPElements[i].setAttribute('data-cert-url', resultArray?.data?.cert_url);
-        }
-      }
-    });
+    // Legacy frontend.php "fetch_product_details_by_id" call removed —
+    // cert_url now comes from the qd-app detail API (item.cert_url).
   });
 
   document.addEventListener('keydown', function(event) {
@@ -1360,16 +1344,13 @@ document.addEventListener('DOMContentLoaded', async () => {
       |--------------------------------------------------------------------------
       */
 
-      setTimeout(() => {
+      const updateRingLinks = () => {
 
           const links = document.querySelectorAll(
               '.collection-matrix a[id$="-image-url"]'
           );
 
-          console.log(
-              'Ring Links Found:',
-              links.length
-          );
+          if (!links.length) { return false; }
 
           links.forEach(link => {
 
@@ -1427,7 +1408,18 @@ document.addEventListener('DOMContentLoaded', async () => {
 
           });
 
-      }, 5000);
+          return true;
+
+      };
+
+      // Ring products load asynchronously; retry until their links exist (up to ~20s)
+      // instead of guessing with a fixed 5s delay.
+      let ringLinkTries = 0;
+      const ringLinkTimer = setInterval(() => {
+          if (updateRingLinks() || ++ringLinkTries > 40) {
+              clearInterval(ringLinkTimer);
+          }
+      }, 500);
 
         /*
         |--------------------------------------------------------------------------
@@ -1617,7 +1609,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         const diamondProducTprice = document.getElementById('diamond-price');
         const diamondShippingContent = document.getElementById('diamonds-shipping-content');
         const diamondMaterialContent = document.getElementById('diamonds-material-content');
-        const diamondBreadcrumbsTitle = document.getElementById('breadcrumbs-product-title');
 
         const imageSection = document.getElementById('product-image--section');
         const videoSection = document.getElementById('product-video--section');
@@ -1656,9 +1647,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         if (diamondMaterialContent) {
           diamondMaterialContent.innerHTML = `${item.material_quality || '-'}`;
-        }
-        if (diamondBreadcrumbsTitle) {
-          diamondBreadcrumbsTitle.innerHTML = `${item.title || '-'}`;
         }
 
          /*
