@@ -1,0 +1,356 @@
+{%- assign product_collections = product.collections | map: 'title' | join: ' ' -%}
+{%- assign category_group = 'stone' -%}
+{%- assign isSaleOrRtsProduct = false -%}
+{%- if product_collections contains 'Sale'
+  or product_collections contains 'Ready To Ship'
+  or product_collections contains 'Ready-To-Ship'
+-%}
+  {%- assign category_group = 'sale' -%}
+  {%- assign isSaleOrRtsProduct = true -%}
+{%- elsif product_collections contains 'Engagement'
+  or product_collections contains 'Wedding'
+  or product_collections contains 'Accessories'
+-%}
+  {%- assign category_group = 'wedding' -%}
+{%- endif -%}
+{%- assign isStoneProduct = false -%}
+{%- if 'Lab Created Diamond Lab Created Gemstone Diamond Hybrid' contains product.type -%}
+  {%- assign isStoneProduct = true -%}
+{%- endif -%}
+{%- assign added_ship_time = 0 -%}
+{%- assign week_day = 'now' | date: '%a' -%}
+{%- if week_day == 'Mon' -%}
+  {%- assign added_ship_time = 2160000 -%}
+{%- elsif week_day == 'Tue' -%}
+  {%- assign added_ship_time = 2332800 -%}
+{%- elsif week_day == 'Wed' -%}
+  {%- assign added_ship_time = 2332800 -%}
+{%- endif -%}
+
+<div class="loose-lab-settings-wrapper has-margin-top has-margin-bottom">
+  {%- assign shapeTags = product.tags | where: 'shape_' | last -%}
+  {%- assign caratTags = product.tags | where: 'carat_' | last -%}
+  {%- assign cutTags = product.tags | where: 'cut_' | last -%}
+  {%- assign colorTags = product.tags | where: 'color_' | last -%}
+  {%- assign clarityTags = product.tags | where: 'clarity_' | last -%}
+  {%- assign labTags = product.tags | where: 'lab_' | last -%}
+  {%- assign certNumTags = product.tags | where: 'cert_num_' | last -%}
+  {%- assign certURLTags = product.tags | where: 'cert_url_' | last -%}
+  {%- assign measurementsTags = product.tags | where: 'measurements_' | last -%}
+  {%- assign gemTypeTags = product.tags | where: 'gem_type_' | last -%}
+  <div class="settings-header">
+    {% if product.type != 'Lab Created Diamond' %}
+      <div class="heading heading-shape">SHAPE</div>
+      <div class="heading heading-carat">CARAT</div>
+      <div class="heading heading-color">COLOR</div>
+      <div class="heading heading-measurement">MEASUREMENT</div>
+    {% else %}
+      <div class="heading heading-carat">CARAT</div>
+      <div class="heading heading-cut">CUT</div>
+      <div class="heading heading-color">COLOR</div>
+      <div class="heading heading-clarity">CLARITY</div>
+      <div class="heading heading-certificate">CERTIFICATE</div>
+    {% endif %}
+  </div>
+  <div class="settings-values" id="diamond-lab-specs">
+    {% if product.type != 'Lab Created Diamond' %}
+      <div class="value heading-shape">
+        {% if shapeTags.size > 0 %}
+          {{- shapeTags | remove: 'shape_' | remove: '_cut' | replace: '_', ' ' -}}
+        {% else -%}
+          -
+        {%- endif %}
+      </div>
+      <div class="value heading-carat">
+        {% if caratTags.size > 0 %}{{- caratTags | remove: 'carat_' -}}{% else %}-{% endif %}
+      </div>
+      <div class="value heading-color">
+        {% if gemTypeTags.size > 0 %}{{- gemTypeTags | remove: 'gem_type_' | replace: '_', ' ' -}}{% else %}-{% endif %}
+      </div>
+      <div class="value heading-measurement">
+        {% if measurementsTags.size > 0 %}
+          {{- measurementsTags | remove: 'measurements_' | append: ' MM' -}}
+        {% else -%}
+          -
+        {%- endif %}
+      </div>
+    {% else %}
+      <div class="value">-</div>
+      <div class="value">-</div>
+      <div class="value">-</div>
+      <div class="value">-</div>
+      <div class="value">-</div>
+      {% comment %} <div class="value heading-carat">
+        {% if caratTags.size > 0 %}{{- caratTags | remove: 'carat_' -}}{% else %}-{% endif %}
+      </div>
+      <div class="value heading-cut">
+        {% if cutTags.size > 0 %}{{- cutTags | remove: 'cut_' | replace: '_', ' ' | upcase -}}{% else %}-{% endif %}
+      </div>
+      <div class="value heading-color">
+        {% if colorTags.size > 0 %}{{- colorTags | remove: 'color_' | upcase -}}{% else %}-{% endif %}
+      </div>
+      <div class="value heading-clarity">
+        {% if clarityTags.size > 0 %}{{- clarityTags | remove: 'clarity_' | upcase -}}{% else %}-{% endif %}
+      </div> {% endcomment %}
+      {% comment %} {% if labTags.size > 0 %}{{- labTags | remove: 'lab_' | upcase -}} {% else %}-{% endif -%} {% endcomment %}
+      {% comment %} <div
+        class="value heading-certificate {% if certNumTags.size > 0 %}cert-popup-pdp{% endif %} open-cert-popup-pdp"
+        data-cert-url="{%- if product.metafields.vdb_product.vdb_cert_url.size > 0 %}{{- product.metafields.vdb_product.vdb_cert_url -}}{% endif -%}"
+       >
+        {%- if certNumTags.size > 0 %}
+          #
+          {{- certNumTags | remove: 'cert_num_' -}}
+        {% else -%}
+          -
+        {%- endif %}
+      </div> {% endcomment %}
+    {% endif %}
+  </div>
+  <a href="javascript:;" id="more-details-stone-pdp" style="font-weight:600;text-decoration:underline;margin-top:0.5rem;width: 40%;">More Details</a>
+</div>
+
+<setting-tabs class="setting-tabs-wrapper">
+  <div id="lab-diamond-content" class="setting-tab-content lab-diamond-content tab-active">
+    <div class="settings-wrapper block--setting-tabs"></div>
+    <div class="block--form">
+      <div class="product-form-container">
+        <div class="product_form">
+          <div class="purchase-details">
+            <div class="purchase-details__buttons purchase-details__spb--false">
+              <div class="button-wrapper">
+                <button
+                  name="add"
+                  class="action_button button button--secondary button--add-to-cart add_to_cart md-button--add-to-cart"
+                  data-label="{{ add_to_cart_label | json }}"
+                  data-variant="{{ product.selected_or_first_available_variant.id }}"
+                  data-product-type="{{ product.type }}"
+                  data-option-shape="{% if shapeTags.size > 0 %}{{- shapeTags | remove: 'shape_' | remove: '_cut' | replace: '_', ' ' -}}{%- endif %}"
+                  data-option-cut="{% if cutTags.size > 0 %}{{- cutTags | remove: 'cut_' | replace: '_', ' ' | upcase -}}{% endif %}"
+                  data-option-carat="{% if caratTags.size > 0 %}{{- caratTags | remove: 'carat_' -}}{% endif %}"
+                  data-option-color="{% if colorTags.size > 0 %}{{- colorTags | remove: 'color_' | upcase -}}{% endif %}"
+                  data-option-clarity="{% if clarityTags.size > 0 %}{{- clarityTags | remove: 'clarity_' | upcase -}}{% endif %}"
+                  data-option-lab="{% if labTags.size > 0 %}{{- labTags | remove: 'lab_' | upcase -}}{% endif -%}"
+                  data-option-sku="{{ product.selected_or_first_available_variant.sku }}"
+                  data-option-cert-number="{%- if certNumTags.size > 0 %}{{- certNumTags | remove: 'cert_num_' -}}{%- endif %}"
+                  data-product-vendor="{{ product.vendor }}"
+                >
+                  <span class="text">Purchase without setting</span>
+                </button>
+                {% comment %}
+                  <button
+                    name="add"
+                    class="action_button button button--primary button--add-to-ring"
+                    data-label="{{ add_to_cart_label | json }}"
+                  >
+                    <span class="text">Add to ring</span>
+                  </button>
+                {% endcomment %}
+                <a
+                  href="#ring-products-section"
+                  class="action_button button button--primary button--add-to-ring button--add-to-cart"
+                  data-label="{{ add_to_cart_label | json }}"
+                >
+                  <span class="text">Add to ring</span>
+                </a>
+              </div>
+              <div class="modal_price subtitle" data-display-savings="true">
+                <div class="price-ui">
+                  <span class="price" data-price="">{{ cart.currency.symbol }}
+                    <span class="money" data-price="" id="diamond-price">{{ product.price | money }}</span>
+                  </span>
+                  <!--
+                    <span class="compare-at-price" data-compare-at-price="">
+                      <span class="money" data-price="">$ 2,539.00</span>
+                    </span>
+                  -->
+                </div>
+                <!--
+                  <div class="price-ui only-installments" data-price-ui="">Comparative Earth-mined Price: $16,755</div>
+                -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="block--order-ship-date">
+      <div class="order-ship-date">
+        <img
+          src="{{ settings.speedsize_url_pfx_https -}}{{ 'calendar.png' | asset_url }}"
+          width="41px"
+          height="44px"
+          loading="eager"
+        >
+        {%- comment -%}
+        {% if isStoneProduct == true %}
+          {%- assign delivery_date = 'now' | date: '%s' -%}
+          {%- assign delivery_week_day = delivery_date | date: '%a' -%}
+
+          {%- if delivery_week_day == 'Mon' -%}
+            {%- assign delivery_date = delivery_date | plus: 604800 -%}
+          {%- elsif delivery_week_day == 'Tue' -%}
+            {%- assign delivery_date = delivery_date | plus: 604800 -%}
+          {%- elsif delivery_week_day == 'Wed' -%}
+            {%- assign delivery_date = delivery_date | plus: 604800 -%}
+          {%- elsif delivery_week_day == 'Thu' -%}
+            {%- assign delivery_date = delivery_date | plus: 604800 -%}
+          {%- elsif delivery_week_day == 'Fri' -%}
+            {%- assign delivery_date = delivery_date | plus: 604800 -%}
+          {%- elsif delivery_week_day == 'Sat' -%}
+            {%- assign delivery_date = delivery_date | plus: 604800 -%}
+          {%- elsif delivery_week_day == 'Sun' -%}
+            {%- assign delivery_date = delivery_date | plus: 518400 -%}
+          {%- endif -%}
+
+        {% elsif category_group == 'wedding' %}
+          {%- assign delivery_date = 'now' | date: '%s' -%}
+          {%- assign delivery_week_day = delivery_date | date: '%a' -%}
+          {%- if delivery_week_day == 'Mon' -%}
+            {%- assign delivery_date = delivery_date | plus: 2160000 -%}
+          {%- elsif delivery_week_day == 'Tue' -%}
+            {%- assign delivery_date = delivery_date | plus: 2332800 -%}
+          {%- elsif delivery_week_day == 'Wed' -%}
+            {%- assign delivery_date = delivery_date | plus: 2332800 -%}
+          {%- elsif delivery_week_day == 'Thu' -%}
+            {%- assign delivery_date = delivery_date | plus: 2332800 -%}
+          {%- elsif delivery_week_day == 'Fri' -%}
+            {%- assign delivery_date = delivery_date | plus: 2332800 -%}
+          {%- elsif delivery_week_day == 'Sat' -%}
+            {%- assign delivery_date = delivery_date | plus: 2332800 -%}
+          {%- elsif delivery_week_day == 'Sun' -%}
+            {%- assign delivery_date = delivery_date | plus: 2419200 -%}
+          {%- endif -%}
+        {% elsif category_group == 'sale' %}
+          {%- assign current_hour = 'now' | date: '%k' -%}
+          {%- if current_hour >= 12 -%}
+            {%- assign delivery_date = 'now' | date: '%s' -%}
+            {%- assign delivery_week_day = delivery_date | date: '%a' -%}
+            {%- if delivery_week_day == 'Tue' -%}
+              {%- assign delivery_date = delivery_date | plus: 2332800 -%}
+            {%- elsif delivery_week_day == 'Wed' -%}
+              {%- assign delivery_date = delivery_date | plus: 2332800 -%}
+            {%- endif -%}
+          {%- else -%}
+            {%- if week_day == 'Fri' -%}
+              {%- assign added_ship_time = 0 -%}
+            {%- endif -%}
+            {%- assign delivery_date = 'now' | date: '%s' -%}
+            {%- assign delivery_week_day = delivery_date | date: '%a' -%}
+            {%- if delivery_week_day == 'Tue' -%}
+              {%- assign delivery_date = delivery_date | plus: 2332800 -%}
+            {%- elsif delivery_week_day == 'Wed' -%}
+              {%- assign delivery_date = delivery_date | plus: 2332800 -%}
+            {%- endif -%}
+          {%- endif -%}
+        {% else %}
+          {%- assign delivery_date = 'now' | date: '%s' -%}
+          {%- assign delivery_week_day = delivery_date | date: '%a' -%}
+          {%- if delivery_week_day == 'Tue' -%}
+            {%- assign delivery_date = delivery_date | plus: 2332800 -%}
+          {%- elsif delivery_week_day == 'Wed' -%}
+            {%- assign delivery_date = delivery_date | plus: 2332800 -%}
+          {%- elsif delivery_week_day == 'Thu' -%}
+            {%- assign delivery_date = delivery_date | plus: 2332800 -%}
+          {%- elsif delivery_week_day == 'Fri' -%}
+            {%- assign delivery_date = delivery_date | plus: 2332800 -%}
+          {%- elsif delivery_week_day == 'Sat' -%}
+            {%- assign delivery_date = delivery_date | plus: 2332800 -%}
+          {%- elsif delivery_week_day == 'Sun' -%}
+            {%- assign delivery_date = delivery_date | plus: 2419200 -%}
+          {%- endif -%}
+        {% endif %}
+        {%- endcomment -%}
+        {%- assign holidayDates = settings.holiday_days -%}
+        {%- assign estDate = "now" | date: "%s" -%}
+        {%- assign newestDate = estDate -%}
+        {%- if product.type contains 'Bracelets' -%}
+          {%- assign estimateDays = settings.bracelet_ship_days -%}
+        {%- elsif category_group == 'tennis necklaces' -%}
+          {%- assign estimateDays = settings.tennis_necklace_ship_days -%}
+        {% elsif isStoneProduct == true %}
+          {%- assign estimateDays = settings.loose_stone_ship_days -%}
+        {% else %}
+          {%- assign estimateDays = settings.other_jewelry_ship_days -%}
+        {%- endif -%}
+        {%- assign current_date = "now" | date: "%d" -%}
+        {%- for i in (1..estimateDays) -%}
+          {%- assign newestDate = newestDate | plus: 86400 -%}
+          {%- assign estDay = newestDate | date:'%a' -%}
+          {%- if estDay == 'Sat' -%}
+            {%- assign newestDate = newestDate | plus : 172800 -%}
+          {%- endif -%}
+          {%- if estDay == 'Sun' -%}
+            {%- assign newestDate = newestDate | plus : 86400 -%}
+          {%- endif -%}
+          {%- assign estDateMonth = newestDate | date:'%d/%m' -%}
+          {%- if holidayDates contains estDateMonth -%}
+            {%- assign newestDate = newestDate | plus : 86400 -%}
+          {%- endif -%}
+          {%- if estDateMonth == '29/12' -%}
+            {%- assign newestDate = newestDate | plus : 345600 -%}
+          {%- endif -%}
+          {%- if estDateMonth == '30/12' -%}
+            {%- assign newestDate = newestDate | plus : 259200 -%}
+          {%- endif -%}
+          {%- if estDateMonth == '31/12' -%}
+            {%- assign newestDate = newestDate | plus : 172800 -%}
+          {%- endif -%}
+          {%- assign updated_estDay = newestDate | date:'%a' -%}
+          {%- if updated_estDay == 'Sat' -%}
+            {%- assign newestDate = newestDate | plus : 172800 -%}
+          {%- endif -%}
+          {%- if updated_estDay == 'Sun' -%}
+            {%- assign newestDate = newestDate | plus : 86400 -%}
+          {%- endif -%}
+        {%- endfor -%}
+        {%- assign estDay = newestDate | date:'%a' -%}
+        {%- if estDay == 'Sat' -%}
+          {%- assign newestDate = newestDate | date: "%s" | plus : 172800 -%}
+        {%- endif -%}
+        {%- if estDay == 'Sun' -%}
+          {%- assign newestDate = newestDate | date: "%s" | plus : 86400 -%}
+        {%- endif -%}
+        {%- assign estDateMonth = newestDate | date:'%d/%m' -%}
+        {%- if holidayDates contains estDateMonth -%}
+          {%- assign newestDate = newestDate | date: "%s" | plus : 86400 | date: "%a, %b %d, %Y" -%}
+          {%- assign estDay = newestDate | date:'%a' -%}
+          {%- if estDay == 'Sat' -%}
+            {%- assign newestDate = newestDate | date: "%s" | plus : 86400 | date: "%a, %b %d, %Y" -%}
+          {%- endif -%}
+          {%- if estDay == 'Sun' -%}
+            {%- assign newestDate = newestDate | date: "%s" | plus : 172800 | date: "%a, %b %d, %Y" -%}
+          {%- endif -%}
+        {%- endif -%}
+        {%- assign delivery_date = newestDate -%}
+        <p class="order-ship-text">Order now to ship by:</p>
+        <p id="lab-diamond-ship-date" class="order-ship-date">{{ delivery_date | date: '%a, %b %e' }}</p>
+      </div>
+    </div>
+
+    <div class="block--sku" style="padding: 0;">
+      <div class="order-ship-date">
+        <div style="width:26px;height:auto;"></div>
+        <p class="order-ship-text" style="font-size: 12px;">SKU:</p>
+        <p class="order-ship-date" id="diamond-sku" style="font-size: 12px;"></p>
+      </div>
+    </div>
+
+    <div class="block--selected-ring-values">
+      <div class="selected-ring-values">
+        <img
+          src="{{ settings.speedsize_url_pfx_https -}}{{ 'diamond.png' | asset_url }}"
+          width="41px"
+          height="44px"
+          loading="eager"
+        >
+        <p class="selected-ring-text">
+          <span class="selected-ring-value"
+            >Our Lab-Grown Diamond and Gemstone inventory changes daily. Move quickly, as this diamond might not be here
+            tomorrow!</span
+          >
+        </p>
+      </div>
+    </div>
+  </div>
+</setting-tabs>

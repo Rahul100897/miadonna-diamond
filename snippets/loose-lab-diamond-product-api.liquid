@@ -1,0 +1,1774 @@
+{% comment %}
+  Product snippet
+
+  @param product
+  @param selected_variant
+  @param width
+  @param css_class
+  @param display_social_buttons
+  @param display_thumbnails
+  @param enable_product_lightbox
+  @param enable_thumbnail_slider
+  @param enable_zoom
+  @param gallery_arrows
+  @param product_description_position
+  @param product_height
+  @param set_product_height
+  @param slideshow_transition
+  @param stickers_enabled
+  @param tag_style
+  @param thumbnail_position
+  @param video_looping
+  @param section_onboarding
+{% endcomment %}
+
+{% comment %} HTML markup {% endcomment %}
+
+
+{% comment %} Breadcrumbs {% endcomment %}
+
+{% comment %} <div class="shopify-section product-template product-breadcrumb">
+  <section class="section is-width-standard has-no-side-gutter">
+      <div class="container">
+          <div class="one-whole column is-flex is-justify-space-between is-align-center">
+              <div class="breadcrumb__container">
+                  <nav class="breadcrumb is-regular is-none" aria-label="breadcrumbs">
+                      <ul>
+                          <li>
+                              <a href="/" title="MiaDonna"> MiaDonna </a>
+                          </li>
+
+                          <li>
+                              <span class="breadcrumb-separator">
+                                  <span class="icon">|</span>
+                              </span>
+
+                              <a href="/collections/lab-created-diamond" title="Lab Created Diamond">
+                                  Lab Created Diamond
+                              </a>
+                          </li>
+
+                          <li>
+                              <span class="breadcrumb-separator">
+                                  <span class="icon">|</span>
+                              </span>
+
+                              <span data-product-breadcrumb-title="" id="breadcrumbs-product-title">2.70 Carat Round Shaped, Excellent Cut, F Color, VS1 Clarity, GIA Certified Lab Grown
+                                  Diamond</span
+                              >
+                          </li>
+                      </ul>
+                  </nav>
+              </div>
+          </div>
+      </div>
+  </section>
+</div> {% endcomment %}
+
+{% comment %} {% liquid
+  assign diamond_handle = '2-70-carat-round-shaped-excellent-cut-f-color-vs1-clarity-gia-certified-lab-grown-diamond'
+
+  assign diamond_product = all_products[diamond_handle]
+
+  assign diamond_selected_variant = diamond_product.selected_or_first_available_variant
+%} {% endcomment %}
+
+<div
+  class="
+    product_section
+    js-product_section
+    container
+    is-justify-space-between
+    has-padding-bottom
+    has-no-side-gutter
+    {% if product_images_position == 'right' %}
+      is-flex-row-reverse
+    {% endif %}
+  "
+>
+
+  <div
+    class="
+      product__images
+      three-fifths
+      column
+      large-down--one-whole
+    "
+  >
+    {% comment %} {% if section_onboarding %}
+      <div class="featured-product__images">
+        {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg placeholder-svg--product' }}
+      </div>
+    {% else %}
+      {% render 'loose-product__images',
+        product: diamond_product,
+        selected_variant: diamond_selected_variant,
+        template_name: 'loose-lab',
+        display_thumbnails: display_thumbnails,
+        thumbnail_position: thumbnail_position,
+        enable_thumbnail_slider: enable_thumbnail_slider,
+        product_height: product_height,
+        set_product_height: set_product_height,
+        video_looping: video_looping,
+        gallery_arrows: gallery_arrows,
+        slideshow_transition: slideshow_transition,
+        enable_product_lightbox: enable_product_lightbox,
+        enable_zoom: enable_zoom
+      %}
+    {% endif %} {% endcomment %}
+
+  <div class="product-gallery--background">
+      <div class="product-gallery">
+
+        <div id="product-image--section" class="block-active">
+          
+          <a id="diamond-image-link" href="javascript:;"
+            data-fancybox>
+            <div class="image__container">
+              <img
+                id="diamond-main-image"
+                src=""
+                alt=""
+              >
+            </div>
+          </a>
+        </div>
+
+        <div id="product-video--section">
+          <div id="product-vimeo_video">
+            <div class="lazyframe canvas-video" data-ratio="9:16">
+              <iframe
+                id="diamond-video-frame"
+                frameborder="0"
+                scrolling="no"
+                src=""
+              ></iframe>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+
+
+     {% comment %} <ul class="buttons-wrapper" id="media-buttons">
+           <li class="button-item">
+              <button onClick="productImages('images')" class="product-image--button media-button block-button-active">Images</button>
+            </li>
+            <li class="button-item">
+              <button onClick="productImages('video')" class="product-video--button media-button">Video</button>
+            </li>
+     </ul>        {% endcomment %}
+
+      <ul class="buttons-wrapper" id="media-buttons">
+      <li class="button-item" id="image-button-wrapper">
+        <button
+          onClick="productImages('images')"
+          class="product-image--button media-button block-button-active"
+        >
+          Images
+        </button>
+      </li>
+
+      <li class="button-item" id="video-button-wrapper">
+        <button
+          onClick="productImages('video')"
+          class="product-video--button media-button"
+        >
+          Video
+        </button>
+      </li>
+    </ul>
+
+    {%- for block in section.blocks -%}
+      {%- if block.type == 'media-buttons' -%}
+        <ul class="buttons-wrapper" id="media-buttons">
+
+           <li class="button-item">
+              <button class="media-button">Images</button>
+            </li>
+            <li class="button-item">
+              <button onClick="productImages('video')" class="product-video--button media-button">
+                Video
+              </button>
+            </li>
+
+          {% if block.settings.button_1 != blank %}
+            <li class="button-item">
+              <button class="media-button">{{ block.settings.button_1 }}</button>
+            </li>
+          {% endif %}
+          {% if block.settings.button_2 != blank %}
+            <li class="button-item">
+              <button onClick="productImages('images')" class="product-image--button media-button block-button-active">
+                {{ block.settings.button_2 }}
+              </button>
+            </li>
+          {% endif %}
+          {% if block.settings.button_3 != blank %}
+            {%- if diamond_product.metafields.attributes.vimeo_id
+              and diamond_product.metafields.attributes.vimeo_id != '-'
+              and diamond_product.metafields.attributes.vimeo_id != '_'
+            -%}
+              {%- assign vimeo_video = diamond_product.metafields.attributes.vimeo_id -%}
+            {%- endif -%}
+            {% if vimeo_video %}
+              <li class="button-item">
+                <button onClick="productImages('video')" class="product-video--button media-button">
+                  {{ block.settings.button_3 }}
+                </button>
+              </li>
+            {% endif %}
+            {%- if diamond_product.metafields.vdb_product.vdb_video_url
+              and diamond_product.metafields.vdb_product.vdb_video_url != '-'
+              and diamond_product.metafields.vdb_product.vdb_video_url != '_'
+              and diamond_product.metafields.vdb_product.vdb_video_url != blank
+            -%}
+              {%- assign d360 = diamond_product.metafields.vdb_product.vdb_video_url -%}
+            {%- endif -%}
+            {% if d360 %}
+              <li class="button-item">
+                <button onClick="productImages('video')" class="product-video--button media-button">
+                  {{ block.settings.button_3 }}
+                </button>
+              </li>
+            {% endif %}
+          {% endif %}
+          {% if block.settings.button_4 != blank %}
+            <li class="button-item">
+              <button onClick="productImagesPopup('all')" class="media-button">{{ block.settings.button_4 }}</button>
+            </li>
+          {% endif %}
+        </ul>
+      {%- elsif block.type == 'tgd' -%}
+        <div id="product-tgd-wrapper-desktop" class="product-tgd-wrapper product-tgd-wrapper-desktop">
+          <div class="product-tgd">
+            <div class="one-third column medium-down--one-whole">
+              <img
+                src="{{ settings.speedsize_url_pfx_https -}}{{ block.settings.image1 | img_url: 'master' }}"
+                width="100%"
+                height="100%"
+                loading="eager"
+              >
+              <div class="content">
+                <h6>{{ block.settings.title1 }}</h6>
+                {{ block.settings.content1 }}
+              </div>
+            </div>
+            <div class="one-third column medium-down--one-whole">
+              <img
+                src="{{ settings.speedsize_url_pfx_https -}}{{ block.settings.image2 | img_url: 'master' }}"
+                width="100%"
+                height="100%"
+                loading="eager"
+              >
+              <div class="content">
+                <h6>{{ block.settings.title2 }}</h6>
+                {{ block.settings.content2 }}
+              </div>
+            </div>
+            <div class="one-third column medium-down--one-whole">
+              <img
+                src="{{ settings.speedsize_url_pfx_https -}}{{ block.settings.image3 | img_url: 'master' }}"
+                width="100%"
+                height="100%"
+                loading="eager"
+              >
+              <div class="content">
+                <h6>{{ block.settings.title3 }}</h6>
+                {{ block.settings.content3 }}
+              </div>
+            </div>
+          </div>
+        </div>
+      {%- endif -%}
+    {%- endfor -%}
+
+    <div class="product-additional-information">
+          <setting-tabs class="setting-tabs-wrapper">
+            <div class="setting-tabs-buttons">
+              <button id="product-details" class="setting-tab-button product-details button-active">
+                  Product Details
+                </button>
+              <button
+                id="product-shipping"
+                class="setting-tab-button product-shipping"
+              >
+                Shipping And Returns
+              </button>
+              <button id="product-included" class="setting-tab-button product-included">Material & Quality</button>
+            </div>
+            <div id="product-details-content" class="setting-tab-content product-details-content tab-active">
+              <div class="products__specs-wrapper">
+                <div id="diamond-specifications" class="products__specs"></div>
+              </div>
+            </div>
+            <div
+              id="product-shipping-content"
+              class="setting-tab-content product-shipping-content"
+            >
+                <div class="dynamic-shipping-content" id="diamonds-shipping-content">
+                </div>
+            </div>
+            <div id="product-included-content" class="setting-tab-content product-included-content">
+              <div class="static-material-content" id="diamonds-material-content">
+                <p>Material & Quality - Content</p>
+              </div>
+            </div>
+          </setting-tabs>
+        </div>
+
+  </div>
+
+  <div
+    class="
+      product__information
+      has-product-sticker
+      two-fifths
+      column
+      large-down--one-whole
+    "
+  >
+    <h1 class="product_name title" id="diamond-product-title"></h1>
+    {% comment %} Sale sticker {% endcomment %}
+    {% comment %} {% if stickers_enabled %}
+      {% assign collection_handles = product.collections | map: 'handle' %}
+      {% render 'product-thumbnail__sticker',
+        product: product,
+        context: 'product',
+        collection_handles: collection_handles
+      %}
+    {% endif %} {% endcomment %}
+
+    {% comment %} {%- for block in section.blocks -%}
+      {% unless block.type == 'media-buttons' or block.type == 'tgd' or block.type == 'additional-product-tabs' %}
+        <div
+          class="
+            product-block
+            product-block--{{ block.type | downcase | replace: '_', '-' }}
+            {% if forloop.first == true %}
+              product-block--first
+            {% endif %}
+          "
+          {{ block.shopify_attributes }}
+        >
+      {% endunless %}
+      {%- if block.type == 'vendor' -%}
+        {% comment %} Vendor {% endcomment %}
+        <p class="vendor">
+          <span class="vendor">
+            {% if section_onboarding %}
+              Vendor name
+            {% else %}
+              {{ product.vendor | link_to_vendor }}
+            {% endif %}
+          </span>
+        </p>
+
+      {%- elsif block.type == 'sku' -%}
+        {% comment %} Sku {% endcomment %}
+        <p class="sku">
+          {% if section_onboarding %}
+            1234567890
+          {% else %}
+            {{ selected_variant.sku }}
+          {% endif %}
+        </p>
+
+      {%- elsif block.type == 'title' -%}
+        {% comment %} Name {% endcomment %}
+        {% comment %} <h1 class="product_name title" id="diamond-product-title"> {% endcomment %}
+          {% comment %} {% if is_product_modal %}
+            <a href="{{ product.url  }}">{{ product.title }}</a>
+          {% elsif section_onboarding %}
+            {{ 'homepage.onboarding.product_title' | t }}
+          {% else %} {% endcomment %}
+            {% comment %}
+              {%- assign caratTags = product.tags | where: 'carat_' | last -%}
+              {%- assign shapeTags = product.tags | where: 'shape_' | last -%}
+              {%- assign gemTypeTags = product.tags | where: 'gem_type_' | last -%}
+              {% if product.type == "Lab Created Gemstone" %}
+                {%- if caratTags.size > 0 %} {{ caratTags | remove: 'carat_' | capitalize }} {% endif -%} Carat {%- if shapeTags.size > 0 %} {{ shapeTags | remove: 'shape_' | capitalize }} {% endif -%} Cut Lab-Created {%- if gemTypeTags.size > 0 %} {{ gemTypeTags | remove: 'gem_type_' | capitalize }}{% endif -%}
+              {% elsif product.type == "Lab Created Diamond" %}
+                {%- if caratTags.size > 0 %} {{ caratTags | remove: 'carat_' | capitalize }} {% endif -%} Carat {%- if shapeTags.size > 0 %} {{ shapeTags | remove: 'shape_' | capitalize }} {% endif -%} Cut Lab-Created Diamond
+              {% elsif product.type == "Diamond Hybrid" %}
+                  {%- if caratTags.size > 0 %} {{ caratTags | remove: 'carat_' | capitalize }} {% endif -%} Carat {%- if shapeTags.size > 0 %} {{ shapeTags | remove: 'shape_' | remove: '_cut' | capitalize }} {% endif -%} Cut Diamond Hybrid
+              {% else %} {% endif %}
+            {% endcomment %}
+            {% comment %} {{ product.title }}
+          {% endif %} {% endcomment %}
+        </h1>
+        {% render 'okendo-custom-star-rating', product: product %}
+      {%- elsif block.type == 'size-chart' -%}
+        {% comment %} Size chart {% endcomment %}
+        {% for tag in product.tags %}
+          {% if tag contains 'meta-size-chart-' %}
+            {% assign meta_size_chart = true %}
+          {% endif %}
+        {% endfor %}
+
+        {% if settings.size_chart != blank or block.settings.size_chart != blank or meta_size_chart %}
+          <a
+            class="product__size-chart"
+            href="javascript:;"
+            data-fancybox
+            data-src="#size-chart{{ product.id  }}"
+            data-type="inline"
+          >
+            {{ block.settings.title | escape }}
+          </a>
+          {% render 'popup-size-chart', block: block, product_id: product.id %}
+        {% endif %}
+
+      {%- elsif block.type == 'price' -%}
+        {% comment %} Price {% endcomment %}
+        <div class="modal_price subtitle" data-display-savings="{{ block.settings.display_savings }}">
+          {% if section_onboarding %}
+            <span class="money">$49.00</span>
+          {% else %}
+            {% comment %}Inject @pixelunion/shopify-price-ui/price-ui begin{% endcomment %}
+            <div class="price-ui price-ui--loading price--sale" data-price-ui>
+              <noscript>
+                <style>
+                  .price-ui--loading {
+                    display: block !important;
+                    opacity: 1 !important;
+                  }
+                </style>
+              </noscript>
+              {% assign compare_at_price = false %}
+
+              {% if product.compare_at_price and product.compare_at_price != product.price %}
+                {% if product.compare_at_price_varies %}
+                  {%- capture price_min -%}
+                      {%-
+                        render 'price-ui-templates',
+                        template: 'price-min',
+                        value: product.compare_at_price_min,
+                      -%}
+                    {%- endcapture -%}
+
+                  {%- capture price_max -%}
+                      {%-
+                        render 'price-ui-templates',
+                        template: 'price-max',
+                        value: product.compare_at_price_max,
+                      -%}
+                    {%- endcapture -%}
+
+                  {%- assign compare_at_price = 'product.price.range_html'
+                    | t: price_min: price_min, price_max: price_max
+                  -%}
+                {% else %}
+                  {%- capture compare_at_price -%}
+                      {%-
+                        render 'price-ui-templates',
+                        template: 'price',
+                        value: product.compare_at_price,
+                      -%}
+                    {%- endcapture -%}
+                {% endif %}
+              {% endif %}
+
+              {% if product.price_varies %}
+                {%- capture price_min -%}
+                    {%-
+                      render 'price-ui-templates',
+                      template: 'price-min',
+                      value: product.price_min,
+                    -%}
+                  {%- endcapture -%}
+
+                {%- capture price_max -%}
+                    {%-
+                      render 'price-ui-templates',
+                      template: 'price-max',
+                      value: product.price_max,
+                    -%}
+                  {%- endcapture -%}
+
+                {%- assign price = 'product.price.range_html' | t: price_min: price_min, price_max: price_max -%}
+              {% else %}
+                {%- capture price -%}
+                    {%-
+                      render 'price-ui-templates',
+                      template: 'price',
+                      value: product.price,
+                    -%}
+                  {%- endcapture -%}
+              {% endif %}
+
+              {%- render 'price-ui-templates',
+                template: 'price-ui',
+                compare_at_price: compare_at_price,
+                price: price,
+                unit_pricing: false
+              -%}
+            </div>
+            {% comment %}Inject @pixelunion/shopify-price-ui/price-ui end{% endcomment %}
+          {% endif %}
+        </div>
+
+      {%- elsif block.type == 'complementary_products' -%}
+        {% comment %} Complementary products {% endcomment %}
+        {% render 'complementary-products', product: product, block: block %}
+
+      {%- elsif block.type == 'description' -%}
+        {% comment %} Description {% endcomment %}
+        {% if block.settings.custom_description != blank %}
+          <div class="description content has-padding-top">
+            {{ block.settings.custom_description | replace: settings.speedsize_shopify_cdn_url, settings.speedsize_url_pfx_shopify_cdn | replace: settings.speedsize_shop_domain_cdn, settings.speedsize_url_pfx_shop_domain_cdn | replace: settings.speedsize_duplicated_https_search, settings.speedsize_duplicated_https_replacement | replace: settings.speedsize_url_pfx_duplicated, settings.speedsize_url_pfx }}
+          </div>
+        {% elsif section_onboarding %}
+          <div class="description content has-padding-top">
+            <p>
+              {{ 'homepage.onboarding.product_description' | t }}
+            </p>
+          </div>
+        {% else %}
+          {% if product.description != blank %}
+            <div
+              class="
+                description
+                description-content
+                content
+                has-padding-bottom
+              "
+            >
+              {% if is_product_modal %}
+                {% if block.settings.truncate_words %}
+                  {{
+                    product.description
+                    | strip_html
+                    | truncatewords: block.settings.truncate_words_limit
+                    | replace: 'Description', ''
+                    | replace: 'Dimensions', ''
+                    | replace: 'Details', ''
+                    | replace: 'Specs', ''
+                    | replace: 'Shipping', ''
+                    | replace: 'Size', ''
+                    | escape
+                    | split: '<!-- split -->'
+                    | first | replace: settings.speedsize_shopify_cdn_url, settings.speedsize_url_pfx_shopify_cdn | replace: settings.speedsize_shop_domain_cdn, settings.speedsize_url_pfx_shop_domain_cdn | replace: settings.speedsize_duplicated_https_search, settings.speedsize_duplicated_https_replacement | replace: settings.speedsize_url_pfx_duplicated, settings.speedsize_url_pfx 
+                  }}
+                {% else %}
+                  {{
+                    product.description
+                    | strip_html
+                    | replace: 'Description', ''
+                    | replace: 'Dimensions', ''
+                    | replace: 'Details', ''
+                    | replace: 'Specs', ''
+                    | replace: 'Shipping', ''
+                    | replace: 'Size', ''
+                    | escape
+                    | split: '<!-- split -->'
+                    | first
+                    | replace: 'https:https:', 'https:' 
+                    | replace: 'https:https:', 'https:' | replace: settings.speedsize_shopify_cdn_url, settings.speedsize_url_pfx_shopify_cdn | replace: settings.speedsize_shop_domain_cdn, settings.speedsize_url_pfx_shop_domain_cdn | replace: settings.speedsize_duplicated_https_search, settings.speedsize_duplicated_https_replacement | replace: settings.speedsize_url_pfx_duplicated, settings.speedsize_url_pfx 
+                  }}
+                {% endif %}
+              {% else %}
+                {%- assign product_description = product.description -%}
+                {%- assign paragraphs = product_description | split: '</p>' -%}
+                {%- assign description_size = paragraphs.size -%}
+                {%- assign first_paragraph = '' -%}
+
+                {%- for paragraph in paragraphs -%}
+                  {%- if paragraph contains '<p>' -%}
+                    {%- assign p_start = paragraph | split: '<p>' | last -%}
+                    {%- assign p_content = p_start | split: '|' | first -%}
+                    {%- assign first_paragraph = p_content | strip -%}
+                    {% break %}
+                  {%- endif -%}
+                {%- endfor -%}
+                <div class="metal-properties">
+                  {{
+                    first_paragraph
+                    | replace: '<br>', ''
+                    | append: '<a href="#media-buttons" style="font-weight:600;text-decoration:underline;margin-left:.5rem;">More Details</a>'
+                  }}
+                </div>
+              {% endif %}
+              <!-- <a href="" style="font-weight:600;text-decoration:underline;">More Details</a> -->
+            </div>
+          {% endif %}
+        {% endif %}
+
+        {% if is_product_modal %}
+          <a
+            class="product__view-details"
+            href="{{ product.url | within: collection  }}"
+            title="{{ product.title | escape }}"
+          >
+            {{- 'collections.general.view_product_details' | t -}}
+          </a>
+        {% endif %}
+
+      {%- elsif block.type == 'form' -%}
+        {% comment %} Purchase form {% endcomment %}
+        {% if section_onboarding %}
+          <div class="product-form-container">
+            <div class="purchase-details">
+              <div class="purchase-details__buttons purchase-details__spb--false">
+                <button
+                  name="add"
+                  class="action_button button button--add-to-cart add_to_cart button--add-to-cart"
+                  data-label="{{ add_to_cart_label | json }}"
+                >
+                  <span class="text">{{ 'products.product.add_to_cart' | t }}</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        {% else %}
+          <div class="product-form-container">
+            {% comment %} Notify form {% endcomment %}
+            {% render 'product__notify-me-form', product: product %}
+
+            {% comment %} Product form {% endcomment %}
+            {% unless collection_handles contains 'coming-soon' %}
+              {% render 'product__form',
+                context: 'product',
+                product: product,
+                sold_out_options: sold_out_options,
+                selected_variant: selected_variant,
+                show_payment_button: block.settings.show_payment_button,
+                collection_handles: collection_handles
+              %}
+            {% endunless %}
+          </div>
+        {% endif %}
+
+      {%- elsif block.type == 'product-links' -%}
+        {% comment %} Collections, type, tags {% endcomment %}
+        {% if block.settings.show_collections or block.settings.show_tags or block.settings.show_type %}
+          <div class="product__classification-links has-padding-top">
+            {% if block.settings.show_collections %}
+              <p class="product__collections-list tags">
+                <span class="product__classification-title">{{ 'products.product.collections' | t }}:</span>
+                {% for col in product.collections %}
+                  <span class="tag tag--{{ tag_style }}">
+                    <a href="{{ col.url  }}" title="{{ col.title }}">{{ col.title }}</a>
+                  </span>
+                {% endfor %}
+              </p>
+            {% endif %}
+
+            {% if block.settings.show_type %}
+              <p class="product__type-list tags">
+                <span class="product__classification-title">{{ 'products.product.product_types' | t }}:</span>
+                <span class="tag tag--{{ tag_style }}">{{ product.type | link_to_type }}</span>
+              </p>
+            {% endif %}
+
+            {% if block.settings.show_tags and product.tags.size > 0 %}
+              <p class="product__tags-list tags">
+                <span class="product__classification-title">{{ 'products.product.tags' | t }}:</span>
+                {% for tag in product.tags %}
+                  {% unless tag contains 'meta-' %}
+                    <span class="tag tag--{{ tag_style }}">
+                      <a
+                        href="{{ routes.collections_url  }}/{% if collection %}{{ collection.handle  }}{% else %}all{% endif %}/{{ tag | handle  }}"
+                        title="{{ 'products.product.products_tagged' | t: tag: tag }}"
+                      >
+                        {{- tag -}}
+                      </a>
+                    </span>
+                  {% endunless %}
+                {% endfor %}
+              </p>
+            {% endif %}
+          </div>
+        {% endif %}
+
+      {%- elsif block.type == 'rating' -%}
+        {% if product.metafields.reviews.rating.value != blank %}
+          <div class="product__rating rating">
+            {% render 'rating-stars',
+              value: product.metafields.reviews.rating.value.rating,
+              scale_max: product.metafields.reviews.rating.value.scale_max
+            %}
+
+            <p class="rating__text">
+              <span aria-hidden="true">
+                {{ product.metafields.reviews.rating.value }} /
+                {{ product.metafields.reviews.rating.value.scale_max }}
+              </span>
+            </p>
+
+            <p class="rating__count">
+              <span aria-hidden="true">
+                {{ product.metafields.reviews.rating_count }}
+                {% if product.metafields.reviews.rating_count > 1 %}
+                  {{ 'general.accessibility.star_reviews_text' | t }}
+                {% else %}
+                  {{ 'general.accessibility.star_review_text' | t }}
+                {% endif %}
+              </span>
+            </p>
+          </div>
+        {% endif %}
+
+      {%- elsif block.type == 'share' -%}
+        {% comment %} Social share icons {% endcomment %}
+        <div class="product__social-share has-padding-top">
+          {% render 'social-share-buttons' %}
+        </div>
+
+      {%- elsif block.type == 'text' -%}
+        {% comment %} Text {% endcomment %}
+        <div class="product-text">
+          {{ block.settings.text }}
+        </div>
+      {%- elsif block.type == 'setting-tabs' -%}
+        {% render 'loose-diamond-setting-tab-api' %}
+      {% elsif block.type == 'additional-links' %}
+        <div class="product-links-wrapper">
+          <ul class="product-links">
+            <li class="product-link-item">
+              <a class="product-link" href="javascript:void(0);" onClick="shippingPopup()">
+                <div class="icon-wrapper">
+                  <img
+                    src="{{ settings.speedsize_url_pfx_https -}}{{ 'flying-heart.png' | asset_url }}"
+                    width="60"
+                    height="60"
+                    loading="eager"
+                  >
+                </div>
+                FREE SHIPPING & RESIZING*
+              </a>
+            </li>
+            <li class="product-link-item">
+              <a class="product-link" href="javascript:void(0);" onclick="productHintPopup()">
+                <div class="icon-wrapper">
+                  <img
+                    src="{{ settings.speedsize_url_pfx_https -}}{{ 'share.png' | asset_url }}"
+                    width="60"
+                    height="60"
+                    loading="eager"
+                  >
+                </div>
+                Share
+              </a>
+            </li>
+            <li class="product-link-item">
+              <a class="product-link" href="javascript:void(0);" onclick="productReturnPopup()">
+                <div class="icon-wrapper">
+                  <img
+                    src="{{ settings.speedsize_url_pfx_https -}}{{ 'returns.png' | asset_url }}"
+                    width="60"
+                    height="60"
+                    loading="eager"
+                  >
+                </div>
+                Easy 60-Day Returns
+              </a>
+            </li>
+            <li class="product-link-item">
+              <a class="product-link" href="#faq-section">
+                <div class="icon-wrapper">
+                  <img
+                    src="{{ settings.speedsize_url_pfx_https -}}{{ 'question-mark.png' | asset_url }}"
+                    width="60"
+                    height="60"
+                    loading="eager"
+                  >
+                </div>
+                Faq
+              </a>
+            </li>
+            <li class="product-link-item">
+              <a class="product-link product-tgd-wrapper" href="javascript:void(0);" onclick="productPaymentPopup()">
+                <div class="icon-wrapper">
+                  <img
+                    src="{{ settings.speedsize_url_pfx_https -}}{{ 'Hand.png' | asset_url }}"
+                    width="60"
+                    height="60"
+                    loading="eager"
+                  >
+                </div>
+                Flexible Payment Options
+              </a>
+            </li>
+            <li class="product-link-item">
+              <a class="product-link" href="javascript:void(0);" onclick="productHelpPopup()">
+                <div class="icon-wrapper">
+                  <img
+                    src="{{ settings.speedsize_url_pfx_https -}}{{ 'chat-bubble-icon.png' | asset_url }}"
+                    width="60"
+                    height="60"
+                    loading="eager"
+                  >
+                </div>
+                Need advice?
+              </a>
+            </li>
+          </ul>
+        </div>
+      {% elsif block.type == 'promotion-banner' %}
+        <div class="image--container">
+          {% if block.settings.url != blank %}
+            <a class="image--link" href="{{ block.settings.url  }}">
+          {% else %}
+            <div class="image--link">
+          {% endif %}
+          {% if block.settings.image != blank %}
+            <div class="image-wrapper">
+              <img
+                src="{{ settings.speedsize_url_pfx_https -}}{{ block.settings.image | img_url: 'master' }}"
+                width="100%"
+                height="100%"
+                loading="eager"
+              >
+            </div>
+          {% endif %}
+          <div class="content">
+            {% if block.settings.title != blank %}
+              <h6>{{ block.settings.title }}</h6>
+            {% endif %}
+            {% if block.settings.content != blank %}
+              {{ block.settings.content }}
+            {% endif %}
+          </div>
+          {% if block.settings.url != blank %}
+            </a>
+          {% else %}
+            </div>
+          {% endif %}
+        </div>
+      {% elsif block.type == '@app' %}
+        <div class="product-app cell-style-blacktext">
+          {% render block %}
+        </div>
+      {%- endif -%}
+      {% unless block.type == 'media-buttons' or block.type == 'tgd' or block.type == 'additional-product-tabs' %}
+        </div>
+      {% endunless %}
+    {%- endfor -%}
+    {%- for block in section.blocks -%}
+      {%- if block.type == 'tgd' -%}
+        <div id="product-tgd-wrapper-mobile" class="product-tgd-wrapper product-tgd-wrapper-mobile">
+          <div class="product-tgd mobile-tgd-slider has-no-side-gutter">
+            <div class="one-third column medium-down--one-whole">
+              <img
+                src="{{ settings.speedsize_url_pfx_https -}}{{ block.settings.image1 | img_url: 'master' }}"
+                width="100%"
+                height="100%"
+                loading="eager"
+              >
+              <div class="content">
+                <h6>{{ block.settings.title1 }}</h6>
+                {{ block.settings.content1 }}
+              </div>
+            </div>
+            <div class="one-third column medium-down--one-whole">
+              <img
+                src="{{ settings.speedsize_url_pfx_https -}}{{ block.settings.image2 | img_url: 'master' }}"
+                width="100%"
+                height="100%"
+                loading="eager"
+              >
+              <div class="content">
+                <h6>{{ block.settings.title2 }}</h6>
+                {{ block.settings.content2 }}
+              </div>
+            </div>
+            <div class="one-third column medium-down--one-whole">
+              <img
+                src="{{ settings.speedsize_url_pfx_https -}}{{ block.settings.image3 | img_url: 'master' }}"
+                width="100%"
+                height="100%"
+                loading="eager"
+              >
+              <div class="content">
+                <h6>{{ block.settings.title3 }}</h6>
+                {{ block.settings.content3 }}
+              </div>
+            </div>
+          </div>
+        </div>
+      {%- elsif block.type == 'additional-product-tabs' -%}
+        <div class="product-additional-information">
+          <setting-tabs class="setting-tabs-wrapper">
+            <div class="setting-tabs-buttons" style="display:flex!important;">
+              {% if product.tags != blank %}
+                <button id="product-details-2" class="setting-tab-button product-details button-active">
+                  Product Details
+                </button>
+              {% endif %}
+              <button
+                id="product-shipping-2"
+                class="setting-tab-button product-shipping {% if product.tags == blank %}button-active{% endif %}"
+              >
+                Shipping And Returns
+              </button>
+              <button id="product-included-2" class="setting-tab-button product-included">Material & Quality</button>
+            </div>
+            {% if product.tags != blank %}
+              <div id="product-details-2-content" class="setting-tab-content product-details-content tab-active">
+                <div class="products__specs-wrapper">
+                  <div class="products__specs">
+                    {%- assign caratTags = product.tags | where: 'carat_' | last -%}
+                    {%- assign shapeTags = product.tags | where: 'shape_' | last -%}
+                    {%- assign cutTags = product.tags | where: 'cut_' | last -%}
+                    {%- assign colorTags = product.tags | where: 'color_' | last -%}
+                    {%- assign clarityTags = product.tags | where: 'clarity_' | last -%}
+                    {%- assign sustainabilityTags = product.tags | where: 'sustainability_' | last -%}
+                    {%- assign labTags = product.tags | where: 'lab_' | last -%}
+                    {%- assign originTags = product.tags | where: 'origin_' | last -%}
+                    {%- assign measurementsTags = product.tags | where: 'measurements_' | last -%}
+                    {%- assign depthTags = product.tags | where: 'depth_' | last -%}
+                    {%- assign tableTags = product.tags | where: 'table_' | last -%}
+                    {%- assign polishTags = product.tags | where: 'polish_' | last -%}
+                    {%- assign symmetryTags = product.tags | where: 'symmetry_' | last -%}
+                    {%- assign fluorTags = product.tags | where: 'fluor_' | last -%}
+                    {%- assign lWRatioTags = product.tags | where: 'l_w_ratio_' | last -%}
+                    {%- assign certNumTags = product.tags | where: 'cert_num_' | last -%}
+                    {%- assign certURLTags = product.tags | where: 'cert_url_' | last -%}
+                    {%- assign culetSizeTags = product.tags | where: 'culet_size_' | last -%}
+
+                    <ul class="products__specs-list">
+                      {%- if caratTags.size > 0 %}
+                        <li>
+                          <span>Carat:</span>
+                          <span>{{- caratTags | remove: 'carat_' | replace: '_', ' ' -}}</span>
+                        </li>
+                      {% endif -%}
+                      {%- if shapeTags.size > 0 %}
+                        <li>
+                          <span>Shape:</span>
+                          <span>{{- shapeTags | remove: 'shape_' | remove: '_cut' | replace: '_', ' ' -}}</span>
+                        </li>
+                      {% endif -%}
+                      {%- if cutTags.size > 0 %}
+                        <li>
+                          <span>Cut:</span>
+                          <span>{{- cutTags | remove: 'cut_' | replace: '_', ' ' -}}</span>
+                        </li>
+                      {% endif -%}
+                      {%- if colorTags.size > 0 %}
+                        <li>
+                          <span>Color:</span>
+                          <span>{{- colorTags | remove: 'color_' | replace: '_', ' ' -}}</span>
+                        </li>
+                      {% endif -%}
+                      {%- if clarityTags.size > 0 %}
+                        <li>
+                          <span>Clarity:</span>
+                          <span>{{- clarityTags | remove: 'clarity_' | replace: '_', ' ' -}}</span>
+                        </li>
+                      {% endif -%}
+                      {%- if sustainabilityTags.size > 0 %}
+                        <li>
+                          <span>Sustainability:</span>
+                          <span>{{- sustainabilityTags | remove: 'sustainability_' | replace: '_', ' ' -}}</span>
+                        </li>
+                      {% endif -%}
+                      {%- if certNumTags.size > 0 %}
+                        <li>
+                          <span>Certificate:</span>
+                          <span
+                            class="cert-popup-pdp open-cert-popup-pdp"
+                            data-cert-url="{%- if product.metafields.vdb_product.vdb_cert_url.size > 0 %}{{- product.metafields.vdb_product.vdb_cert_url -}}{% endif -%}"
+                          >
+                            {%- if certNumTags.size > 0 %}
+                              #
+                              {{- certNumTags | remove: 'cert_num_' -}}
+                            {% endif -%}
+                          </span>
+                        </li>
+                      {% endif -%}
+                      {% comment %}
+                        {%- if originTags.size > 0 %}
+                          <li>
+                            <span>Origin:</span>
+                            <span>{{- originTags | remove: 'origin_' | replace: "_", " " -}}</span>
+                          </li>
+                        {% endif -%}
+                      {% endcomment %}
+                      {%- if selected_variant.sku.size > 0 %}
+                        <li>
+                          <span>SKU:</span>
+                          <span>{{- selected_variant.sku -}}</span>
+                        </li>
+                      {% endif -%}
+                      {%- if measurementsTags.size > 0 %}
+                        <li>
+                          {% comment %} <span>Measurements (MM):</span> {% endcomment %}
+                          <span>Measurement:</span>
+                          <span>{{- measurementsTags | remove: 'measurements_' -}}</span>
+                        </li>
+                      {% endif -%}
+                      {%- if depthTags.size > 0 %}
+                        <li>
+                          <span>Depth:</span>
+                          <span>{{- depthTags | remove: 'depth_' | replace: '_', ' ' -}}</span>
+                        </li>
+                      {% endif -%}
+                      {%- if tableTags.size > 0 %}
+                        <li>
+                          <span>Table %:</span>
+                          <span>{{- tableTags | remove: 'table_' | replace: '_', ' ' -}}</span>
+                        </li>
+                      {% endif -%}
+                      {%- if polishTags.size > 0 %}
+                        <li>
+                          <span>Polish:</span>
+                          <span>{{- polishTags | remove: 'polish_' | replace: '_', ' ' -}}</span>
+                        </li>
+                      {% endif -%}
+                      {%- if symmetryTags.size > 0 %}
+                        <li>
+                          <span>Symmetry:</span>
+                          <span>{{- symmetryTags | remove: 'symmetry_' | replace: '_', ' ' -}}</span>
+                        </li>
+                      {% endif -%}
+                      {%- if culetSizeTags.size > 0 %}
+                        <li>
+                          <span>Culet:</span>
+                          <span>{{- culetSizeTags | remove: 'culet_size_' | replace: '_', ' ' -}}</span>
+                        </li>
+                      {% endif -%}
+                      {%- if fluorTags.size > 0 %}
+                        <li>
+                          <span>Fluorescence:</span>
+                          <span>{{- fluorTags | remove: 'fluor_' | replace: '_', ' ' -}}</span>
+                        </li>
+                      {% endif -%}
+                      {%- if lWRatioTags.size > 0 %}
+                        <li>
+                          <span>Length/Width Ratio:</span>
+                          <span>{{- lWRatioTags | remove: 'l_w_ratio_' | replace: '_', ' ' -}}</span>
+                        </li>
+                      {% endif -%}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            {% endif %}
+            <div
+              id="product-shipping-2-content"
+              class="setting-tab-content product-shipping-content {% if product.tags == blank %}button-active{% endif %}"
+            >
+              {%- assign shippingReturnsText = '' -%}
+              {%- for productCollection in product.collections -%}
+                {%- if productCollection.metafields.product.shipping_text -%}
+                  {%- assign shippingReturnsText = productCollection.metafields.product.shipping_text -%}
+                {%- endif -%}
+              {%- endfor -%}
+              {%- if shippingReturnsText != '' -%}
+                <div class="dynamic-shipping-content">
+                  {{ shippingReturnsText }}
+                </div>
+              {%- else -%}
+                <div class="static-shipping-content">
+                  {{ settings.product_shipping_content | replace: '<p></p>', '<br>' }}
+                </div>
+              {%- endif -%}
+            </div>
+            <div id="product-included-2-content" class="setting-tab-content product-included-content">
+              <div class="static-material-content">
+                {{ settings.material_quality_content | replace: '<p></p>', '<br>' }}
+              </div>
+            </div>
+          </setting-tabs>
+        </div>
+      {%- endif -%}
+    {%- endfor -%} {% endcomment %}
+
+    <div class="product-block">
+      {% render 'loose-diamond-setting-tab-api' %}
+    </div>
+
+  </div>
+</div>
+<script>
+  if (document.getElementsByClassName('md-button--add-to-cart')?.length > 0) {
+    let mdButtonAddToCartElements = document.getElementsByClassName('md-button--add-to-cart');
+    mdButtonAddToCartElements = Array.prototype.slice.call(mdButtonAddToCartElements);
+    for (let i = 0; i < mdButtonAddToCartElements.length; i++) {
+      mdButtonAddToCartElements[i].addEventListener('click', async function() {
+        let variantId = this.dataset.variant;
+
+        this.innerHTML = '<span class="text">Processing...</span>';
+        this.disabled = true;
+
+        let properties = {};
+        if (this.dataset?.productType?.length > 0) {
+          properties['Material'] = this.dataset?.productType;
+        }
+        if (this.dataset?.optionShape?.length > 0) {
+          properties['shape'] = this.dataset?.optionShape+' Cut';
+        }
+        if (this.dataset?.optionCut?.length > 0) {
+          properties['cut'] = this.dataset?.optionCut;
+        }
+        if (this.dataset?.optionCarat?.length > 0) {
+          properties['carat'] = this.dataset?.optionCarat+'ct';
+        }
+        if (this.dataset?.optionColor?.length > 0) {
+          properties['color'] = this.dataset?.optionColor;
+        }
+        if (this.dataset?.optionClarity?.length > 0) {
+          properties['clarity'] = this.dataset?.optionClarity;
+        }
+        if (this.dataset?.optionLab?.length > 0) {
+          properties['lab'] = this.dataset?.optionLab;
+        }
+        if (this.dataset?.optionCertNumber?.length > 0) {
+          properties['Cert Number'] = this.dataset?.optionCertNumber;
+        }
+        if (this.dataset?.optionSku?.length > 0) {
+          properties['sku'] = this.dataset?.optionSku;
+        }
+        if (this.dataset?.productVendor?.length > 0) {
+          properties['_vendor_name'] = this.dataset?.productVendor;
+        }
+        if(document.getElementById('lab-diamond-ship-date') && document.getElementById('lab-diamond-ship-date').innerHTML != ''){
+          properties['Estimate Ship Date'] = document.getElementById('lab-diamond-ship-date').innerHTML;
+        }
+        await mdButtonAddToCart(this, variantId, 1, properties);
+      });
+    }
+  }
+
+  async function mdButtonAddToCart(_this, variant_id, quantity = "1", properties = {}) {
+    var formData = new FormData();
+    formData.append("id", variant_id);
+    formData.append("quantity", quantity);
+    Object.entries(properties).forEach(entry => {
+        const [key, value] = entry;
+        formData.append("properties[" + key + "]", value);
+    });
+
+    let rawResponse = await fetch("/cart/add.js", {
+      method: "POST",
+      body: formData,
+    });
+
+    let cart = await rawResponse.json();
+    await freeProductAddToCart();
+    open_group_cart_drawer();
+
+    _this.innerHTML = '<span class="text">Purchase without setting</span>';
+    _this.disabled = false;
+  }
+
+  if (document.getElementsByClassName('open-cert-popup-pdp')?.length > 0) {
+      let openCertPopupPDPElements = document.getElementsByClassName('open-cert-popup-pdp');
+      openCertPopupPDPElements = Array.prototype.slice.call(openCertPopupPDPElements);
+      for (let i = 0; i < openCertPopupPDPElements.length; i++) {
+        openCertPopupPDPElements[i].addEventListener('click', function(event) {
+            event.stopPropagation();
+            event.preventDefault();
+            var save_cert_data = this.dataset.certUrl;
+            window.open(save_cert_data, '_blank').focus();
+
+            /*
+            // var save_cert_num_replace_data = this.dataset.certNumReplace;
+            // var save_cert_num_data = this.dataset.certNum;
+            // var save_cert_data = save_cert_data.replace(save_cert_num_replace_data,save_cert_num_data);
+            var save_cert_data_arr = save_cert_data.split('.');
+            var ext = save_cert_data_arr.pop().toLowerCase();
+
+            var myCertFrame = document.getElementById('myCertFrame');
+            var myCertImg = document.getElementById('myCertImg');
+
+            myCertFrame.style.display = 'none';
+            myCertImg.style.display = 'none';
+            if (save_cert_data !== '') {
+                if (ext === 'pdf') {
+                    // myCertFrame.src = 'https://docs.google.com/gview?url=' + save_cert_data + '&embedded=true';
+                    myCertFrame.src = save_cert_data;
+                    myCertFrame.style.display = 'block';
+                    document.getElementById('certificate-popup').style.display = 'block';
+                } else if (ext === 'jpg' || ext === 'jpeg' || ext === 'png') {
+                    myCertImg.src = save_cert_data;
+                    myCertImg.style.display = 'block';
+                    document.getElementById('certificate-popup').style.display = 'block';
+                } else {
+                    myCertFrame.src = save_cert_data;
+                    myCertFrame.style.display = 'block';
+                    document.getElementById('certificate-popup').style.display = 'block';
+                }
+            }
+            document.querySelector('html').classList.add('certi-overflow-hidden');
+            closeCertPopup();*/
+        });
+      }
+  }
+
+  function closeCertPopup(){
+    if (document.getElementsByClassName('vdb-lb-close-cert-popup')) {
+      const vdbLBCloseCertPopupElement =  document.getElementsByClassName('vdb-lb-close-cert-popup');
+      for (let i = 0; i < vdbLBCloseCertPopupElement.length; i++) {
+        vdbLBCloseCertPopupElement[i].addEventListener('click', function() {
+          const myCertFrame = document.getElementById('myCertFrame');
+          const myCertImg = document.getElementById('myCertImg');
+
+          myCertFrame.style.display = 'none';
+          myCertImg.style.display = 'none';
+
+          myCertImg.src = '';
+          myCertFrame.src = '';
+          document.getElementById('certificate-popup').style.display = 'none';
+          document.querySelector('html').classList.remove('certi-overflow-hidden');
+        });
+      }
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", async function () { 
+  const productId = '{{ product.id }}';
+  var formData = new FormData();
+    formData.append("action", "fetch_product_details_by_id");
+    formData.append("shop", Shopify.shop);
+    formData.append("product_id", productId);
+    fetch("/apps/vdb-maidonna-inventory-app/frontend.php", {
+      method: 'POST', body: formData
+    }).then(response => response.text())
+    .then(result => {
+      var resultArray = JSON.parse(result);
+      if (resultArray?.data?.cert_url?.length > 0) {
+        let openCertPopupPDPElements = document.getElementsByClassName('open-cert-popup-pdp');
+        openCertPopupPDPElements = Array.prototype.slice.call(openCertPopupPDPElements);
+        for (let i = 0; i < openCertPopupPDPElements.length; i++) {
+          openCertPopupPDPElements[i].setAttribute('data-cert-url', resultArray?.data?.cert_url);
+        }
+      }
+    });
+  });
+
+  document.addEventListener('keydown', function(event) {
+      if (event.code === 'Escape') {
+          document.querySelector('.vdb-lb-close-cert-popup').click();
+      }
+  });
+
+  if(document.getElementById('more-details-stone-pdp')){
+    document.getElementById('more-details-stone-pdp').addEventListener("click", function (e) {
+      e.preventDefault();
+      const isMobile = window.innerWidth <= 768;
+      const targetId = isMobile ? 'product-details-2-content' : 'product-details-content';
+      const target = document.getElementById(targetId);
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth' });
+      }
+    });
+  }
+</script>
+
+
+
+
+{% comment %} <div class="settings-header">
+  <div class="heading heading-carat">CARAT</div>
+  <div class="heading heading-cut">CUT</div>
+  <div class="heading heading-color">COLOR</div>
+  <div class="heading heading-clarity">CLARITY</div>
+  <div class="heading heading-certificate">CERTIFICATE</div>
+</div>
+
+<div class="settings-values" id="diamond-main-specs">
+  <div class="value">-</div>
+  <div class="value">-</div>
+  <div class="value">-</div>
+  <div class="value">-</div>
+  <div class="value">-</div>
+</div>
+
+<div id="diamond-specifications">
+  <p>Loading specifications...</p>
+</div> {% endcomment %}
+
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+
+    const urlParams = new URLSearchParams(window.location.search);
+    
+    if (urlParams.has('sku')) {
+      // 2. Target your hidden section
+      const breadcrumbContent = document.getElementById('diamond-product-breadcrumb');
+      
+      if (breadcrumbContent) {
+        // 3. Make it visible instantly
+        breadcrumbContent.style.display = 'block'; 
+      }
+    }
+
+
+    const params = new URLSearchParams(
+        window.location.search
+    );
+
+    const sku = params.get('sku');
+
+    if (!sku) {
+        console.error('SKU missing in URL');
+        return;
+    }
+    console.log('loading API', sku);
+
+    const username = 'admin';
+    const password = '123456';
+
+    const apiUrl = `http://localhost/qd-app/items/${sku}`;
+
+    const mainSpecsWrapper = document.getElementById(
+        'diamond-lab-specs'
+    );
+
+    const specsWrapper = document.getElementById(
+        'diamond-specifications'
+    );
+
+    try {
+
+        const response = await fetch(apiUrl, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Basic ' + btoa(`${username}:${password}`)
+            }
+        });
+
+        const result = await response.json();
+
+        console.log('Diamond API Result:', result);
+
+        if (
+            !result ||
+            result.status !== 'success' ||
+            !result.data
+        ) {
+
+            if (specsWrapper) {
+              specsWrapper.innerHTML = `<p>No specifications found.</p>`;
+            }
+            return;
+
+        }
+
+        const item = result.data;
+        console.log('Diamond title:', item.title);
+
+      /*
+      |--------------------------------------------------------------------------
+      | Update Ring Product URLs
+      |--------------------------------------------------------------------------
+      */
+
+      setTimeout(() => {
+
+          const links = document.querySelectorAll(
+              '.collection-matrix a[id$="-image-url"]'
+          );
+
+          console.log(
+              'Ring Links Found:',
+              links.length
+          );
+
+          links.forEach(link => {
+
+              try {
+
+                  console.log(
+                      'Original Href:',
+                      link.href
+                  );
+
+                  const match = link.href.match(
+                      /(https:\/\/www\.miadonna\.com\/products\/[^?&]+)/
+                  );
+
+                  if (!match) {
+                      return;
+                  }
+
+                  const baseUrl = match[1];
+
+                  const updatedUrl =
+                      `${baseUrl}` +
+                      `?material=lab-diamond` +
+                      `&solid_metal=${encodeURIComponent(
+                          '14K White Gold'
+                      )}` +
+                      `&shape=${encodeURIComponent(
+                          (item.shape || '') + ' Cut'
+                      )}` +
+                      `&stone-carat=${encodeURIComponent(
+                          item.carat || ''
+                      )}` +
+                      `&quality=${encodeURIComponent(
+                          item.clarity || ''
+                      )}` +
+                      `&stone-handle=${encodeURIComponent(
+                          item.shopify_handle || ''
+                      )}`;
+
+                  link.href = updatedUrl;
+
+                  console.log(
+                      'Updated URL:',
+                      updatedUrl
+                  );
+
+              } catch (error) {
+
+                  console.error(
+                      'Unable to update URL',
+                      error
+                  );
+
+              }
+
+          });
+
+      }, 5000);
+
+        /*
+        |--------------------------------------------------------------------------
+        | Main Header Data
+        |--------------------------------------------------------------------------
+        */
+       const carat = item.carat || '-';
+
+        const cut = item.cut
+            ? item.cut.toUpperCase()
+            : '-';
+
+        const color = item.color
+            ? item.color.toUpperCase()
+            : '-';
+
+        const clarity = item.clarity
+            ? item.clarity.toUpperCase()
+            : '-';
+
+        let certificateHtml = '-';
+
+        if ( item.cert_num && item.cert_url ) {
+            certificateHtml = ` <a href="${item.cert_url}" target="_blank" rel="noopener"> #${item.cert_num} </a>`;
+        } else if (item.cert_num) {
+            certificateHtml = `#${item.cert_num}`;
+        }
+
+        if (mainSpecsWrapper) {
+        mainSpecsWrapper.innerHTML = `
+            <div class="value heading-carat">
+                ${carat}
+            </div>
+
+            <div class="value heading-cut">
+                ${cut}
+            </div>
+
+            <div class="value heading-color">
+                ${color}
+            </div>
+
+            <div class="value heading-clarity">
+                ${clarity}
+            </div>
+
+            <div class="value heading-certificate">
+                ${certificateHtml}
+            </div>
+        `;
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Settings Data
+        |--------------------------------------------------------------------------
+        */
+        const specs = [
+            {
+                label: 'Carat',
+                value: item.carat
+            },
+            {
+                label: 'Shape',
+                value: item.shape
+            },
+            {
+                label: 'Cut',
+                value: item.cut
+            },
+            {
+                label: 'Color',
+                value: item.color
+            },
+            {
+                label: 'Clarity',
+                value: item.clarity
+            },
+            {
+                label: 'Sustainability',
+                value: item.sustainability
+            },
+            {
+                label: 'Certificate',
+                value: item.cert_num,
+                certUrl: item.cert_url
+            },
+            {
+                label: 'SKU',
+                value: item.shopify_sku
+            },
+            {
+                label: 'Depth',
+                value: item.depth
+            },
+            {
+                label: 'Polish',
+                value: item.polish
+            },
+            {
+                label: 'Symmetry',
+                value: item.symmetry
+            },
+            {
+                label: 'Fluorescence',
+                value: item.fluor
+            },
+            {
+                label: 'Length/Width Ratio',
+                value: item.l_w_ratio
+            },
+            {
+                label: 'Measurements',
+                value: item.measurements
+            },
+            {
+                label: 'Table',
+                value: item.table
+            },
+            {
+                label: 'Lab',
+                value: item.lab
+            }
+        ];
+
+        let html = `
+            <div class="products__specs-wrapper">
+                <div class="products__specs">
+                    <ul class="products__specs-list">
+        `;
+
+        specs.forEach(spec => {
+
+            if (
+                spec.value === null ||
+                spec.value === undefined ||
+                spec.value === ''
+            ) {
+                return;
+            }
+
+            if (
+                spec.label === 'Certificate' &&
+                spec.certUrl
+            ) {
+
+                html += `
+                    <li>
+                        <span>${spec.label}:</span>
+                        <span>
+                            <a
+                                href="${spec.certUrl}"
+                                target="_blank"
+                                rel="noopener"
+                            >
+                                #${spec.value}
+                            </a>
+                        </span>
+                    </li>
+                `;
+
+            } else {
+
+                html += `
+                    <li>
+                        <span>${spec.label}:</span>
+                        <span>${spec.value}</span>
+                    </li>
+                `;
+            }
+
+        });
+
+        html += `
+                    </ul>
+                </div>
+            </div>
+        `;
+
+        specsWrapper.innerHTML = html;
+
+
+       // Single SKU Replace
+
+        const skuElement = document.getElementById('diamond-sku');
+        const diamondProducTtitle = document.getElementById('diamond-product-title');
+        const diamondProducTprice = document.getElementById('diamond-price');
+        const diamondShippingContent = document.getElementById('diamonds-shipping-content');
+        const diamondMaterialContent = document.getElementById('diamonds-material-content');
+        const diamondBreadcrumbsTitle = document.getElementById('breadcrumbs-product-title');
+
+        const imageSection = document.getElementById('product-image--section');
+        const videoSection = document.getElementById('product-video--section');
+
+        const imageButton = document.getElementById('image-button-wrapper');
+        const videoButton = document.getElementById('video-button-wrapper');
+
+        const image = document.getElementById('diamond-main-image');
+        const imageLink = document.getElementById('diamond-image-link');
+
+        const videoFrame = document.getElementById('diamond-video-frame');
+
+      console.log('item', item);
+
+      const imageUrl = item.image_url || '';
+      const videoUrl = item.video_url || '';
+
+      console.log('imageUrl', imageUrl);
+      console.log('videoUrl', videoUrl);
+
+
+        if (skuElement) {
+          skuElement.innerHTML = `${item.shopify_sku || '-'}`;
+        }
+        if (diamondProducTtitle) {
+          diamondProducTtitle.innerHTML = `${item.title || '-'}`;
+        }
+        if (diamondProducTprice) {
+          const priceNum = parseFloat(item.price);
+          diamondProducTprice.innerHTML = isNaN(priceNum)
+            ? '-'
+            : '$' + priceNum.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+        if (diamondShippingContent) {
+          diamondShippingContent.innerHTML = `${item.shipping || '-'}`;
+        }
+        if (diamondMaterialContent) {
+          diamondMaterialContent.innerHTML = `${item.material_quality || '-'}`;
+        }
+        if (diamondBreadcrumbsTitle) {
+          diamondBreadcrumbsTitle.innerHTML = `${item.title || '-'}`;
+        }
+
+         /*
+          |--------------------------------------------------------------------------
+          | Image
+          |--------------------------------------------------------------------------
+          */
+          if (imageUrl) {
+
+              if (image) {
+                  image.src = imageUrl;
+                  image.alt = item.title || '';
+              }
+
+              if (imageLink) {
+                  imageLink.href = imageUrl;
+              }
+
+              if (imageSection) {
+                  imageSection.style.display = '';
+              }
+
+              if (imageButton) {
+                  imageButton.style.display = '';
+              }
+
+          } else {
+
+              if (imageSection) {
+                  imageSection.style.display = 'none';
+              }
+
+              if (imageButton) {
+                  imageButton.style.display = 'none';
+              }
+
+          }
+
+          /*
+          |--------------------------------------------------------------------------
+          | Video
+          |--------------------------------------------------------------------------
+          */
+          if (videoUrl) {
+
+              if (videoFrame) {
+                  videoFrame.src = videoUrl;
+              }
+
+              if (videoSection) {
+                  videoSection.style.display = '';
+              }
+
+              if (videoButton) {
+                  videoButton.style.display = '';
+              }
+
+          } else {
+
+              if (videoSection) {
+                  videoSection.style.display = 'none';
+              }
+
+              if (videoButton) {
+                  videoButton.style.display = 'none';
+              }
+
+          }
+
+          /*
+          |--------------------------------------------------------------------------
+          | Default Active Media
+          |--------------------------------------------------------------------------
+          */
+          {% comment %} if (imageUrl && videoUrl) {
+
+              productImages('images');
+
+          } else if (imageUrl) {
+
+              productImages('images');
+
+          } else if (videoUrl) {
+
+              productImages('video');
+          } {% endcomment %}
+
+        {% comment %} const videoFrame = document.getElementById('diamond-video-frame'); {% endcomment %}
+console.log('log here');
+            console.log({
+        imageSection,
+        videoSection,
+        imageButton,
+        videoButton,
+        image,
+        imageLink,
+        videoFrame
+    });
+        
+      } catch (error) {
+
+        console.error(
+            'Diamond API Error:',
+            error
+        );
+
+        specsWrapper.innerHTML = `
+            <p>Unable to load specifications.</p>
+        `;
+    }
+
+});
+</script>
