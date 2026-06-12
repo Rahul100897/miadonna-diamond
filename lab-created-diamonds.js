@@ -1035,11 +1035,11 @@ window.LB_GROWN_DIAMOND = function () {
                                             <div class="filters-toggle-container">
                                             <div class="filter-buttons">
                                             
-                                                <a href="/products/${staticHandle}?${productURL}&dyo=diamond_journey${window.LB_GROWN_DIAMOND.getUrlParameter('ring-handle') !== undefined ? '': '#ring-products-section'}" class="button button--secondary reset-button" aria-label="Add diamond to ring">${window.LB_GROWN_DIAMOND.getUrlParameter('ring-handle') !== undefined ? 'select': 'Add to ring'}</a>
+                                                <a href="${window.LB_GROWN_DIAMOND.getUrlParameter('ring-handle') !== undefined ? '/products/' + staticHandle + '?' + productURL + '&stone-sku=' + diamondsArray?.shopify_sku + '&dyo=diamond_journey' : '/pages/loose-lab-grown-diamonds?sku=' + diamondsArray?.shopify_sku + '#ring-products-section'}" class="button button--secondary reset-button" aria-label="Add diamond to ring">${window.LB_GROWN_DIAMOND.getUrlParameter('ring-handle') !== undefined ? 'select': 'Add to ring'}</a>
                                                 ${window.LB_GROWN_DIAMOND.getUrlParameter('ring-handle') === undefined ? `<a href="javascript:;"  data-id="${diamondsArray?.shopify_variant_id}" class="button button--primary results-button add-to-cart vdb-add-to-cart" aria-label="Add to Bag">ADD TO BAG</a>`:""}
                                                 
                                             </div>
-                                            <a target="_blank" href="/products/${staticHandle1}?${productURL}" class="viewdetail">VIEW DETAILS</a>
+                                            <a target="_blank" href="/pages/loose-lab-grown-diamonds?sku=${diamondsArray?.shopify_sku}" class="viewdetail">VIEW DETAILS</a>
                                             </div>
                                         </div>
                                         </td>
