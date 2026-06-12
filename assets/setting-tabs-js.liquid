@@ -2507,6 +2507,7 @@
 				} else {
 					// OLD: add the bare ring variant.
 					// selectedProductId product
+					console.log('[combined] NOT combined — adding BARE RING variant', variant_id, '(if you see this on a ring+diamond add, the deployed file is stale)');
 					await vdb_addtocart(variant_id, quantity, properties);
 				}
 			}
