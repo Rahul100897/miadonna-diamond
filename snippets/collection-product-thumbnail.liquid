@@ -21,6 +21,7 @@
 {% assign productShapeParams = '' %}
 {% assign productMetalParams = '' %}
 {% assign productCaratParams = '' %}
+{% assign productSkuParams = '' %}
 
 {% assign marketing_banner_video_1 = collection.metafields.collection.marketing_banner_video_1.value %}
 {% assign marketing_banner_video_1_mobile = collection.metafields.collection.marketing_banner_video_1_mobile.value %}
@@ -51,6 +52,12 @@
   {% for param in productHandlePageQueryArray %}
     {%- if param contains 'carat' -%}
       {% assign productCaratParams = param | split: '=' | last %}
+    {%- endif -%}
+  {% endfor %}
+
+  {% for param in productHandlePageQueryArray %}
+    {%- if param contains 'sku' -%}
+      {% assign productSkuParams = param | split: '=' | last %}
     {%- endif -%}
   {% endfor %}
 
@@ -447,17 +454,17 @@
         {% if template == 'collection.filter-tab' and flag == 1 %}
           <a
             id="{{ product.handle }}-image-url"
-            href="{% if template == 'collection.filter-tab' %}{{ prod_url }}&shape={{ productShapeParams }}{% if carat_first != blank %}&stone-carat={{ carat_first }}{% endif %}{% if gem_type_first != blank %}&gem_color={{ gem_type_first }}{% endif %}{% else %}{{ product.url  }}{% endif %}{% if productMetalParams != blank %}&solid_metal={{ productMetalParams }}{% endif %}"
+            href="{% if template == 'collection.filter-tab' %}{{ prod_url }}&shape={{ productShapeParams }}{% if carat_first != blank %}&stone-carat={{ carat_first }}{% endif %}{% if gem_type_first != blank %}&gem_color={{ gem_type_first }}{% endif %}{% if productSkuParams != blank %}&stone-sku={{ productSkuParams }}{% endif %}{% else %}{{ product.url  }}{% endif %}{% if productMetalParams != blank %}&solid_metal={{ productMetalParams }}{% endif %}"
           >
         {% elsif template == 'collection.all-engagement-rings' %}
           <a
             id="{{ product.handle }}-image-url"
-            href="{% if template == 'collection.filter-tab' %}{{ prod_url }}&shape={{ productShapeParams }}{% if carat_first != blank %}&stone-carat={{ carat_first }}{% endif %}{% if gem_type_first != blank %}&gem_color={{ gem_type_first }}{% endif %}{% else %}{{ product.url  }}{% endif %}{% if productMetalParams != blank %}&solid_metal={{ productMetalParams }}{% endif %}"
+            href="{% if template == 'collection.filter-tab' %}{{ prod_url }}&shape={{ productShapeParams }}{% if carat_first != blank %}&stone-carat={{ carat_first }}{% endif %}{% if gem_type_first != blank %}&gem_color={{ gem_type_first }}{% endif %}{% if productSkuParams != blank %}&stone-sku={{ productSkuParams }}{% endif %}{% else %}{{ product.url  }}{% endif %}{% if productMetalParams != blank %}&solid_metal={{ productMetalParams }}{% endif %}"
           >
         {% elsif template == 'collection' %}
           <a
             id="{{ product.handle }}-image-url"
-            href="{% if template == 'collection.filter-tab' %}{{ prod_url }}&shape={{ productShapeParams }}{% if carat_first != blank %}&stone-carat={{ carat_first }}{% endif %}{% if gem_type_first != blank %}&gem_color={{ gem_type_first }}{% endif %}{% else %}{{ product.url  }}{% endif %}{% if productMetalParams != blank %}&solid_metal={{ productMetalParams }}{% endif %}"
+            href="{% if template == 'collection.filter-tab' %}{{ prod_url }}&shape={{ productShapeParams }}{% if carat_first != blank %}&stone-carat={{ carat_first }}{% endif %}{% if gem_type_first != blank %}&gem_color={{ gem_type_first }}{% endif %}{% if productSkuParams != blank %}&stone-sku={{ productSkuParams }}{% endif %}{% else %}{{ product.url  }}{% endif %}{% if productMetalParams != blank %}&solid_metal={{ productMetalParams }}{% endif %}"
           >
         {% endif %}
         {% if settings.stickers_enabled %}
@@ -546,9 +553,9 @@
                   <div class="one-whole">
                     {% render 'collection-product-badge', product: product %}
                     {% if template == 'collection.filter-tab' and flag == 1 %}
-                      <a href="{% if template == 'collection.filter-tab' %}{{ prod_url }}&shape={{ productShapeParams }}{% if carat_first != blank %}&stone-carat={{ carat_first }}{% endif %}{% if gem_type_first != blank %}&gem_color={{ gem_type_first }}{% endif %}{% else %}{{ product.url  }}{% endif %}">
+                      <a href="{% if template == 'collection.filter-tab' %}{{ prod_url }}&shape={{ productShapeParams }}{% if carat_first != blank %}&stone-carat={{ carat_first }}{% endif %}{% if gem_type_first != blank %}&gem_color={{ gem_type_first }}{% endif %}{% if productSkuParams != blank %}&stone-sku={{ productSkuParams }}{% endif %}{% else %}{{ product.url  }}{% endif %}">
                     {% elsif template == 'collection'  %}
-                      <a href="{% if template == 'collection.filter-tab' %}{{ prod_url }}&shape={{ productShapeParams }}{% if carat_first != blank %}&stone-carat={{ carat_first }}{% endif %}{% if gem_type_first != blank %}&gem_color={{ gem_type_first }}{% endif %}{% else %}{{ product.url  }}{% endif %}">
+                      <a href="{% if template == 'collection.filter-tab' %}{{ prod_url }}&shape={{ productShapeParams }}{% if carat_first != blank %}&stone-carat={{ carat_first }}{% endif %}{% if gem_type_first != blank %}&gem_color={{ gem_type_first }}{% endif %}{% if productSkuParams != blank %}&stone-sku={{ productSkuParams }}{% endif %}{% else %}{{ product.url  }}{% endif %}">
                     {% endif %}
                       {%
                         render 'image-element',

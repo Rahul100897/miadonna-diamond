@@ -1388,6 +1388,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                       )}` +
                       `&stone-handle=${encodeURIComponent(
                           item.shopify_handle || ''
+                      )}` +
+                      `&stone-sku=${encodeURIComponent(
+                          item.shopify_sku || ''
                       )}`;
 
                   link.href = updatedUrl;

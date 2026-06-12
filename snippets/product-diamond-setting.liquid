@@ -149,6 +149,7 @@
   let productHandle = "{{ product.handle }}";
   var shapeFilter = "{{ defaultCut }}";
   let diamondCarat = "";
+  let diamondSku = "";
   // On the API-driven page there is no Shopify product, so product.handle /
   // defaultCut are blank. Pull the chosen diamond's handle/shape/carat from
   // the qd-app API via ?sku= so the ring grid can match + link to it.
@@ -166,6 +167,7 @@
         productHandle = item.shopify_handle || '';
         shapeFilter = item.shape || shapeFilter;
         diamondCarat = item.carat || '';
+        diamondSku = item.shopify_sku || '';
       }
     } catch (e) { console.error('Setting tab: diamond load failed', e); }
   }
@@ -270,7 +272,7 @@
 
   function getCollectionList(){
     ajaxCallDiamondListRunning = 'No';
-    var collectionURL = `/collections/${window.PRODUCT_DIAMOND.config.collection}/?view=filter-tab&handle=${productHandle}&carat=${diamondCarat}&filter.p.m.custom.shape=${shapeFilter}`;
+    var collectionURL = `/collections/${window.PRODUCT_DIAMOND.config.collection}/?view=filter-tab&handle=${productHandle}&carat=${diamondCarat}&sku=${diamondSku}&filter.p.m.custom.shape=${shapeFilter}`;
     if(window.PRODUCT_DIAMOND.config.minPrice != '' || window.PRODUCT_DIAMOND.config.maxPrice != ''){
       collectionURL += `&filter.v.price.gte=${window.PRODUCT_DIAMOND.config.minPrice}&filter.v.price.lte=${window.PRODUCT_DIAMOND.config.maxPrice}`;
     }
