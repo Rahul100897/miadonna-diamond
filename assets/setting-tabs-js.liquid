@@ -2081,6 +2081,97 @@
       }).catch(error => console.log('error', error));
     }
 
+	/*
+	 * QD combined Ring+Diamond add-to-cart.
+	 * Creates (or updates) ONE Shopify product = ring + diamond via the qd-app
+	 * endpoint (upserts by combined SKU/handle, no duplicates), then adds that
+	 * single variant to the cart with both ring and diamond attributes as
+	 * line-item properties. Engraving / side stones are still added as their own
+	 * grouped line items by the caller (combined_price here is ring + diamond only).
+	 */
+	async function vdbAddCombinedRingDiamond(opts) {
+		var ring = opts.ringProperties || {};
+		var qd = opts.qdStone || {};
+
+		// diamond_sku — from the URL (?stone-sku), fall back to the qd-app response.
+		var diamondSku = new URLSearchParams(window.location.search).get('stone-sku') || qd.shopify_sku || '';
+
+		// ring_sku ("Setting SKU") — the selected ring variant's SKU.
+		var ringSku = '';
+		var ringOpt = document.querySelector('#all_varients option[value="' + opts.ringVariantId + '"]');
+		if (ringOpt) { ringSku = ringOpt.getAttribute('data-varient_sku') || ''; }
+		if (ringSku === '') { ringSku = '{{ product.selected_or_first_available_variant.sku }}'; }
+		if (ringSku === '') { ringSku = '{{ product.handle }}'; }
+
+		// ring_title
+		var ringTitleEl = document.getElementById('product_title');
+		var ringTitle = (ringTitleEl && ringTitleEl.value) ? ringTitleEl.value : '{{ product.title }}';
+
+		// combined_price = ring (data-final-price is in cents) + diamond (qd price in dollars)
+		var ringDollars = parseFloat(opts.ringPriceCents || '0') / 100;
+		var diamondDollars = parseFloat(qd.price || '0');
+		var combinedPrice = (ringDollars + diamondDollars).toFixed(2);
+
+		// create / upsert the combined product, get its variant id back
+		var combinedVariantId = '';
+		try {
+			var res = await fetch('http://localhost/qd-app/shopify/create-product-by-sku', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					'Authorization': 'Basic ' + btoa('admin:123456')
+				},
+				body: JSON.stringify({
+					ring_sku: ringSku,
+					diamond_sku: diamondSku,
+					ring_title: ringTitle,
+					combined_price: combinedPrice,
+					ring_image: opts.ringImage || ''
+				})
+			});
+			var data = await res.json();
+			if (data && data.status === 'success' && data.variant_id) {
+				combinedVariantId = data.variant_id;
+			} else {
+				console.log('combined create-product-by-sku failed', data);
+			}
+		} catch (e) {
+			console.log('combined create-product-by-sku error', e);
+		}
+
+		if (!combinedVariantId) {
+			// Fail safe: don't add a broken line; reset the button and bail.
+			alert('Sorry, we could not add this ring + diamond combination. Please try again.');
+			if (document.getElementById('vdb_add_to_cart') != null) {
+				document.getElementById('vdb_add_to_cart').innerHTML = "Add To Bag";
+				document.getElementById('vdb_add_to_cart').disabled = false;
+			}
+			return;
+		}
+
+		// Merged line-item properties. Start from the ring properties (already carry
+		// _groupId, _isMain, Metal, Size, Estimate Ship Date, etc.), then add the
+		// diamond. Cert Number is customer-visible; SKUs are "_"-prefixed (admin-only).
+		var props = Object.assign({}, ring);
+		props['Material'] = 'Lab Grown Diamond';
+		if (qd.shape)        { props['Stone Shape']   = qd.shape; }
+		if (qd.carat)        { props['Stone Carat']   = qd.carat + 'ctw'; }
+		if (qd.color)        { props['Stone Color']   = qd.color; }
+		if (qd.clarity)      { props['Stone Clarity'] = qd.clarity; }
+		if (qd.cut)          { props['Cut']           = qd.cut; }
+		if (qd.measurements) { props['Dimension']     = qd.measurements; }
+		if (qd.lab)          { props['Lab']           = qd.lab; }
+		if (qd.cert_num)     { props['Cert Number']   = qd.cert_num; }   // customer-visible
+		// admin-only (hidden in cart/checkout, still on the order):
+		if (diamondSku)      { props['_diamond_sku']  = diamondSku; }
+		if (ringSku)         { props['_setting_sku']  = ringSku; }
+		props['_combined_sku'] = ringSku + '-' + diamondSku;
+		if (qd.shopify_product_vendor) { props['_vendor_name'] = qd.shopify_product_vendor; }
+		if (qd.cert_url)     { props['_cert_url']     = qd.cert_url; }
+
+		await vdb_addtocart(combinedVariantId, '1', props);
+	}
+
 	/* add to cart button click event */
     let dataLayerItemsOnSetting = [];
 	var addToCartMain = document.getElementById("vdb_add_to_cart");
@@ -2097,6 +2188,13 @@
             var customizable = parseInt('{{ attributes_customizable }}');
             var basic_builder = parseInt('{{ attributes_basic_builder }}');
 			var groupId = Array.from(Array(30), () => Math.floor(Math.random() * 36).toString(36)).join("");
+
+			// QD combined Ring+Diamond: a lab diamond attached via ?stone-sku has NO Shopify
+			// variant id (the qd-app feed leaves it blank), so the normal stone gates below
+			// would block it. Detect it here and route to a single combined product instead.
+			var qdStoneSku = new URLSearchParams(window.location.search).get('stone-sku') || '';
+			var qdStoneData = (priceCalculatorObj['stone_product'] && priceCalculatorObj['stone_product'].data) ? priceCalculatorObj['stone_product'].data : null;
+			var isQdCombined = (qdStoneSku !== '' && qdStoneData != null);
 
 			// validation
 			document.getElementById("initial_engraving_error") && (document.getElementById("initial_engraving_error").innerHTML = "");
@@ -2155,7 +2253,9 @@
 					document.getElementById("name_error1").innerHTML = "Please Enter Name 1";
 				}
 			}
-			if (document.getElementById('vdb_stone_variant_id') != null && document.getElementById('vdb_stone_variant_id').value=="") {
+			// (qdStoneSku == '' guard: a QD lab diamond has no Shopify variant id by design,
+			//  so don't treat its empty vdb_stone_variant_id as "no stone selected".)
+			if (qdStoneSku == '' && document.getElementById('vdb_stone_variant_id') != null && document.getElementById('vdb_stone_variant_id').value=="") {
 				if(center_stone_count>0 && (customizable>0 || basic_builder>0) ){
                     error = true;
                     if (document.getElementById('center_stone_error') != null){
@@ -2366,12 +2466,29 @@
 				properties['Closure Type'] = closureDropdown.value;
 			}
 
-				// selectedProductId product
-				await vdb_addtocart(variant_id, quantity, properties);
+				if (isQdCombined) {
+					// NEW (QD combined): add ONE Ring+Diamond product instead of the bare
+					// ring variant. The diamond is NOT added as its own line; its price and
+					// attributes fold into this combined line. Engraving / side stones below
+					// are still added as their own grouped lines.
+					await vdbAddCombinedRingDiamond({
+						groupId: groupId,
+						ringVariantId: variant_id,
+						ringProperties: properties,
+						ringPriceCents: document.getElementsByClassName("final_price")[0].getAttribute("data-final-price"),
+						ringImage: shopify_cdn_image,
+						qdStone: qdStoneData
+					});
+				} else {
+					// OLD: add the bare ring variant.
+					// selectedProductId product
+					await vdb_addtocart(variant_id, quantity, properties);
+				}
 			}
 
 			//if stone product exist
-			if (stoneProduct != '') {
+			// (skip when isQdCombined: the diamond is folded into the combined product above)
+			if (stoneProduct != '' && !isQdCombined) {
 				var variant_id = stoneProduct;
 				var quantity = '1';
 				var properties = {
@@ -3014,7 +3131,10 @@
 		var productType = "{{product.type}}";
 		var center_stone_count = parseInt('{{ attributes_center_stone_count }}');
 		if(productType=="Engagement Rings" || productType=="Wedding Ring Sets" ){
-			if (document.getElementById('vdb_stone_variant_id') != null && document.getElementById('vdb_stone_variant_id').value=="") {
+			// QD combined: a lab diamond attached via ?stone-sku has no Shopify variant id;
+			// don't hide Add-to-Cart for it (it's added as a combined Ring+Diamond product).
+			var _qdStoneSku = new URLSearchParams(window.location.search).get('stone-sku') || '';
+			if (_qdStoneSku == '' && document.getElementById('vdb_stone_variant_id') != null && document.getElementById('vdb_stone_variant_id').value=="") {
 				if(center_stone_count>0){
 					btn_display = 'stone';
 				}
