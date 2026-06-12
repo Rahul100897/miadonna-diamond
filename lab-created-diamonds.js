@@ -779,7 +779,10 @@ window.LB_GROWN_DIAMOND = function () {
                                     
                                     htmlList = '';
                                     // ${videoURL?.length > 0 ? "" : 'style="background-image: url(' + mainImageURL + ');"'}
-                                    const dynamic_id = `pro-data-${diamondsArray.vdb_stock_id}`;
+                                    // vdb_stock_id is empty from the new API, which made every row share the id "pro-data-"
+                                    // (so the drawer always opened the first row). Use shopify_sku — populated + unique per stone.
+                                    //const dynamic_id = `pro-data-${diamondsArray.vdb_stock_id}`;
+                                    const dynamic_id = `pro-data-${diamondsArray.shopify_sku}`;
                                       htmlList += `<tr class="vdb-lb-view-btn open-filter-btn" id="${dynamic_id}-list" data-producthandle="${staticHandle1}" data-sku="${diamondsArray?.shopify_sku}" data-href="/products/${staticHandle}?${productURL}&dyo=diamond_journey${window.LB_GROWN_DIAMOND.getUrlParameter('ring-handle') !== undefined ? '': '#ring-products-section'}" data-id="${dynamic_id}" data-video="${videoURL}" data-display="true">
                                         <td class="shape">
                                             <textarea id="product-${diamondsArray?.shopify_variant_id}" style="display:none;">${JSON.stringify(diamondsArray)}</textarea>
