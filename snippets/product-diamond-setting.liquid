@@ -165,7 +165,12 @@
       const item = data && data.data;
       if (item) {
         productHandle = item.shopify_handle || '';
-        shapeFilter = item.shape || shapeFilter;
+        // The ring metafield filter expects the same format the old page used
+        // ({{ defaultCut }} = "Round+Cut"), so append "+Cut" unless already present.
+        if (item.shape) {
+          var _sh = ('' + item.shape).trim().replace(/\s+/g, '+');
+          shapeFilter = _sh.indexOf('Cut') === -1 ? _sh + '+Cut' : _sh;
+        }
         diamondCarat = item.carat || '';
         diamondSku = item.shopify_sku || '';
       }
