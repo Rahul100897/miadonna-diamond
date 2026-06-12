@@ -1776,8 +1776,8 @@ window.LB_GROWN_DIAMOND = function () {
                     body: JSON.stringify({ sku: sku, handle: handle })
                 });
                 const result = await res.json();
-                const d = (result && result.data) || {};
-                return d.shopify_variant_id || d.variant_id || d.id || result.shopify_variant_id || result.variant_id || '';
+                // variant_id is returned at the top level for both "created" and "updated"
+                return result.variant_id || result?.product?.variants?.[0]?.id || result?.product?.product?.variants?.[0]?.id || '';
             } catch (e) {
                 console.log('create-product-by-sku failed', e);
                 return '';
