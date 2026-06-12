@@ -1129,11 +1129,30 @@
         if(document.getElementById('lab-diamond-ship-date') && document.getElementById('lab-diamond-ship-date').innerHTML != ''){
           properties['Estimate Ship Date'] = document.getElementById('lab-diamond-ship-date').innerHTML;
         }
+        // Create the Shopify product/variant for this diamond via the API, then add it to cart
+        variantId = await createDiamondProductSetting(this.dataset.optionSku || '', this.dataset.optionHandle || '');
+        if (!variantId) { this.innerHTML = '<span class="text">Purchase without setting</span>'; this.disabled = false; return; }
         await mdButtonAddToCart(this, variantId, 1, properties);
       });
     }
   }
 
+  async function createDiamondProductSetting(sku, handle) {
+    // Creates the Shopify product/variant for an API diamond and returns its variant id.
+    try {
+      const res = await fetch('http://localhost/qd-app/shopify/create-product-by-sku', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Basic ' + btoa('admin:123456') },
+        body: JSON.stringify({ sku: sku, handle: handle })
+      });
+      const result = await res.json();
+      const d = (result && result.data) || {};
+      return d.shopify_variant_id || d.variant_id || d.id || result.shopify_variant_id || result.variant_id || '';
+    } catch (e) {
+      console.log('create-product-by-sku failed', e);
+      return '';
+    }
+  }
   async function mdButtonAddToCart(_this, variant_id, quantity = "1", properties = {}) {
     var formData = new FormData();
     formData.append("id", variant_id);
@@ -1336,6 +1355,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         const item = result.data;
+        // expose sku/handle on the "Purchase without setting" button so create-product-by-sku can run
+        document.querySelectorAll('.md-button--add-to-cart').forEach(function (b) {
+          b.dataset.optionSku = item.shopify_sku || '';
+          b.dataset.optionHandle = item.shopify_handle || '';
+        });
         console.log('Diamond title:', item.title);
 
       /*

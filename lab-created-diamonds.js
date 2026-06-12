@@ -785,7 +785,7 @@ window.LB_GROWN_DIAMOND = function () {
                                     const dynamic_id = `pro-data-${diamondsArray.shopify_sku}`;
                                       htmlList += `<tr class="vdb-lb-view-btn open-filter-btn" id="${dynamic_id}-list" data-producthandle="${staticHandle1}" data-sku="${diamondsArray?.shopify_sku}" data-href="/products/${staticHandle}?${productURL}&dyo=diamond_journey${window.LB_GROWN_DIAMOND.getUrlParameter('ring-handle') !== undefined ? '': '#ring-products-section'}" data-id="${dynamic_id}" data-video="${videoURL}" data-display="true">
                                         <td class="shape">
-                                            <textarea id="product-${diamondsArray?.shopify_variant_id}" style="display:none;">${JSON.stringify(diamondsArray)}</textarea>
+                                            <textarea id="product-${diamondsArray?.shopify_sku}" style="display:none;">${JSON.stringify(diamondsArray)}</textarea>
                                             <div class="shape-icon-container">
                             
                                                 <img src="${svgURL}" onerror="${errorSrc}"  width="18"  height="18" alt="${diamondsArray?.shape}" >
@@ -1036,7 +1036,7 @@ window.LB_GROWN_DIAMOND = function () {
                                             <div class="filter-buttons">
                                             
                                                 <a href="${window.LB_GROWN_DIAMOND.getUrlParameter('ring-handle') !== undefined ? '/products/' + staticHandle + '?' + productURL + '&stone-sku=' + diamondsArray?.shopify_sku + '&dyo=diamond_journey' : '/pages/loose-lab-grown-diamonds?sku=' + diamondsArray?.shopify_sku + '#ring-products-section'}" class="button button--secondary reset-button" aria-label="Add diamond to ring">${window.LB_GROWN_DIAMOND.getUrlParameter('ring-handle') !== undefined ? 'select': 'Add to ring'}</a>
-                                                ${window.LB_GROWN_DIAMOND.getUrlParameter('ring-handle') === undefined ? `<a href="javascript:;"  data-id="${diamondsArray?.shopify_variant_id}" class="button button--primary results-button add-to-cart vdb-add-to-cart" aria-label="Add to Bag">ADD TO BAG</a>`:""}
+                                                ${window.LB_GROWN_DIAMOND.getUrlParameter('ring-handle') === undefined ? `<a href="javascript:;"  data-id="${diamondsArray?.shopify_sku}" class="button button--primary results-button add-to-cart vdb-add-to-cart" aria-label="Add to Bag">ADD TO BAG</a>`:""}
                                                 
                                             </div>
                                             <a target="_blank" href="/pages/loose-lab-grown-diamonds?sku=${diamondsArray?.shopify_sku}" class="viewdetail">VIEW DETAILS</a>
@@ -1723,8 +1723,8 @@ window.LB_GROWN_DIAMOND = function () {
                 vdbAddToCartElements = Array.prototype.slice.call(vdbAddToCartElements);
                 for (let i = 0; i < vdbAddToCartElements.length; i++) {
                     vdbAddToCartElements[i].addEventListener('click', async function() {
-                        let variantId = this.dataset.id;
-                        let productObj = JSON.parse(document.querySelector(`#product-${variantId}`).innerHTML) || {};
+                        let sku = this.dataset.id;
+                        let productObj = JSON.parse(document.querySelector(`#product-${sku}`)?.innerHTML || '{}') || {};
     
                         let properties = {};
                         if (Object.keys(productObj)?.length > 0) {
@@ -1759,11 +1759,30 @@ window.LB_GROWN_DIAMOND = function () {
                         }
                         this.innerHTML = '<span class="btn-view">Processing...</span>';
 		                this.disabled = true;
+                        // Create the Shopify product/variant for this diamond via the API, then add it to cart
+                        const variantId = await window.LB_GROWN_DIAMOND.createDiamondProduct(productObj?.shopify_sku || sku, productObj?.shopify_handle || '');
+                        if (!variantId) { this.innerHTML = 'ADD TO BAG'; this.disabled = false; return; }
                         await window.LB_GROWN_DIAMOND.addToCart(this, variantId, 1, properties);
                     });
                 }
             }
         }, 
+        createDiamondProduct: async function(sku, handle) {
+            // Creates the Shopify product/variant for an API diamond and returns its variant id.
+            try {
+                const res = await fetch('http://localhost/qd-app/shopify/create-product-by-sku', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': 'Basic ' + btoa('admin:123456') },
+                    body: JSON.stringify({ sku: sku, handle: handle })
+                });
+                const result = await res.json();
+                const d = (result && result.data) || {};
+                return d.shopify_variant_id || d.variant_id || d.id || result.shopify_variant_id || result.variant_id || '';
+            } catch (e) {
+                console.log('create-product-by-sku failed', e);
+                return '';
+            }
+        },
         addToCart: async function(_this, variant_id, quantity = "1", properties = {}) {
             var formData = new FormData();
             formData.append("id", variant_id);
