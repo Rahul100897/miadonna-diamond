@@ -2090,11 +2090,27 @@
 	 * grouped line items by the caller (combined_price here is ring + diamond only).
 	 */
 	async function vdbAddCombinedRingDiamond(opts) {
+		console.log('[combined] vdbAddCombinedRingDiamond called', opts);
 		var ring = opts.ringProperties || {};
 		var qd = opts.qdStone || {};
 
 		// diamond_sku — from the URL (?stone-sku), fall back to the qd-app response.
 		var diamondSku = new URLSearchParams(window.location.search).get('stone-sku') || qd.shopify_sku || '';
+
+		// priceCalculatorObj is reset to {} by createPriceCalculator() on every
+		// form change, so opts.qdStone can be empty by click time. Re-fetch the
+		// diamond from the qd-app API so price + properties are always correct.
+		if ((!qd || !qd.price) && diamondSku !== '') {
+			try {
+				var dRes = await fetch('http://localhost/qd-app/items/' + encodeURIComponent(diamondSku), {
+					headers: { 'Authorization': 'Basic ' + btoa('admin:123456') }
+				});
+				var dJson = await dRes.json();
+				if (dJson && dJson.data) { qd = dJson.data; }
+			} catch (e) {
+				console.log('[combined] diamond refetch failed', e);
+			}
+		}
 
 		// ring_sku ("Setting SKU") — the selected ring variant's SKU.
 		var ringSku = '';
@@ -2114,6 +2130,14 @@
 
 		// create / upsert the combined product, get its variant id back
 		var combinedVariantId = '';
+		var combinedReqBody = {
+			ring_sku: ringSku,
+			diamond_sku: diamondSku,
+			ring_title: ringTitle,
+			combined_price: combinedPrice,
+			ring_image: opts.ringImage || ''
+		};
+		console.log('[combined] POST create-product-by-sku', combinedReqBody);
 		try {
 			var res = await fetch('http://localhost/qd-app/shopify/create-product-by-sku', {
 				method: 'POST',
@@ -2121,22 +2145,17 @@
 					'Content-Type': 'application/json',
 					'Authorization': 'Basic ' + btoa('admin:123456')
 				},
-				body: JSON.stringify({
-					ring_sku: ringSku,
-					diamond_sku: diamondSku,
-					ring_title: ringTitle,
-					combined_price: combinedPrice,
-					ring_image: opts.ringImage || ''
-				})
+				body: JSON.stringify(combinedReqBody)
 			});
 			var data = await res.json();
+			console.log('[combined] response', res.status, data);
 			if (data && data.status === 'success' && data.variant_id) {
 				combinedVariantId = data.variant_id;
 			} else {
-				console.log('combined create-product-by-sku failed', data);
+				console.log('[combined] create-product-by-sku failed', data);
 			}
 		} catch (e) {
-			console.log('combined create-product-by-sku error', e);
+			console.log('[combined] create-product-by-sku error (network/CORS/mixed-content?)', e);
 		}
 
 		if (!combinedVariantId) {
@@ -2193,8 +2212,14 @@
 			// variant id (the qd-app feed leaves it blank), so the normal stone gates below
 			// would block it. Detect it here and route to a single combined product instead.
 			var qdStoneSku = new URLSearchParams(window.location.search).get('stone-sku') || '';
+			// isQdCombined keys off the URL param ONLY. priceCalculatorObj is reset
+			// to {} by createPriceCalculator() on every form change, so its
+			// 'stone_product' is usually gone by click time — relying on it made the
+			// combined add silently never fire. qdStoneData is best-effort (for the
+			// line-item properties); vdbAddCombinedRingDiamond() refetches if it's empty.
 			var qdStoneData = (priceCalculatorObj['stone_product'] && priceCalculatorObj['stone_product'].data) ? priceCalculatorObj['stone_product'].data : null;
-			var isQdCombined = (qdStoneSku !== '' && qdStoneData != null);
+			var isQdCombined = (qdStoneSku !== '');
+			console.log('[combined] add-to-cart: isQdCombined =', isQdCombined, '| stone-sku =', qdStoneSku, '| qdStoneData present =', (qdStoneData != null));
 
 			// validation
 			document.getElementById("initial_engraving_error") && (document.getElementById("initial_engraving_error").innerHTML = "");
