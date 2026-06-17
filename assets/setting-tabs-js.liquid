@@ -2682,7 +2682,14 @@
 			body: formData,
 		});
 		let cart = await rawResponse.json();
-        if (Object.keys(cart)?.length > 0) {
+		// /cart/add.js returns the line item on success; on failure (e.g. 422) it
+		// returns {status,message,description} with NO `properties`. Guard so a
+		// failed add logs instead of throwing on cart.properties (which left the
+		// button stuck on "Processing...").
+		if (!rawResponse.ok || !cart || !cart.properties) {
+			console.log('[combined] /cart/add.js did not succeed', rawResponse.status, cart);
+		}
+        if (cart && cart.properties && Object.keys(cart).length > 0) {
             let metal = "", stoneShape = "", sideStone = "", centerStone = "", size = "", engravingText = "";
             if (cart.properties['Metal']) {
               metal = cart.properties['Metal'];
