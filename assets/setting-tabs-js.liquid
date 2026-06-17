@@ -3010,7 +3010,8 @@
 				document.getElementById("vdb_stone_variant_id").value = '';
 				document.getElementById("vdb_stone_variant_price").value = '';
 				if (document.getElementById("stoneImage") != null) {
-					document.getElementById("stoneImage").src = 'https://cdn.shopify.com/s/files/1/1164/4258/files/MD_Icon_Gray.svg?v=1699297537';
+					// was a hard placeholder reset; re-apply the selected stone's image instead
+					setStonePreviewImage();
 				}
 				disableEnableAddToCart();
 				priceCalculatorObj['stone'] = {};
@@ -3317,9 +3318,32 @@
 	// CENTER STONE BUTTON
     $xhr_fetch_dummy_side_stone_products_ld = '';
     $xhr_fetch_dummy_side_stone_products_gem = '';
+	// Set the "Your Stone" preview image: the attached stone's real image when a
+	// stone is selected (?stone-sku/?stone-handle present and its image loaded),
+	// else the gray placeholder. Centralised so the async stone-load can't be
+	// clobbered by a synchronous placeholder reset (which left the preview blank
+	// on first load but showed it after a refresh).
+	function setStonePreviewImage() {
+		var img = document.getElementById("stoneImage");
+		if (img == null) { return; }
+		var sel = document.getElementById("select-from-inventory");
+		var stoneImg = (sel && sel.dataset && sel.dataset.optionStoneImage) ? sel.dataset.optionStoneImage : '';
+		var sp = new URLSearchParams(window.location.search);
+		var hasStone = (sp.get('stone-sku') || sp.get('stone-handle') || '') !== '';
+		if (hasStone && stoneImg && stoneImg !== 'null') {
+			img.src = stoneImg;
+			if (document.getElementById("stone_images") != null) {
+				document.getElementById("stone_images").style.display = 'block';
+			}
+		} else {
+			img.src = 'https://cdn.shopify.com/s/files/1/1164/4258/files/MD_Icon_Gray.svg?v=1699297537';
+		}
+	}
+
 	function center_stone_logic() {
      	if (document.getElementById("stoneImage") != null) {
-			document.getElementById("stoneImage").src = 'https://cdn.shopify.com/s/files/1/1164/4258/files/MD_Icon_Gray.svg?v=1699297537';
+			// was a hard placeholder reset; re-apply the selected stone's image instead
+			setStonePreviewImage();
 		}
 		// point no 31
 		if (document.getElementById("stone_selected_value") != null) {
