@@ -1154,20 +1154,37 @@
     }
   }
   async function mdButtonAddToCart(_this, variant_id, quantity = "1", properties = {}) {
-    var formData = new FormData();
-    formData.append("id", variant_id);
-    formData.append("quantity", quantity);
-    Object.entries(properties).forEach(entry => {
+    function buildForm() {
+      var fd = new FormData();
+      fd.append("id", variant_id);
+      fd.append("quantity", quantity);
+      Object.entries(properties).forEach(entry => {
         const [key, value] = entry;
-        formData.append("properties[" + key + "]", value);
-    });
+        fd.append("properties[" + key + "]", value);
+      });
+      return fd;
+    }
 
-    let rawResponse = await fetch("/cart/add.js", {
-      method: "POST",
-      body: formData,
-    });
+    // A just-created product can take a moment to be addable on the storefront
+    // (the variant isn't indexed the instant it's created), which returns a 422
+    // "Cannot find variant". Retry a few times so the add is reliable, and only
+    // open the cart drawer once it actually succeeds.
+    let added = false;
+    for (let attempt = 0; attempt < 4; attempt++) {
+      let rawResponse = await fetch("/cart/add.js", { method: "POST", body: buildForm() });
+      if (rawResponse.ok) { added = true; break; }
+      let err = await rawResponse.json().catch(() => ({}));
+      console.log('[purchase-without-setting] /cart/add.js attempt ' + (attempt + 1) + ' failed', rawResponse.status, err);
+      await new Promise(function (r) { setTimeout(r, 2000); });
+    }
 
-    let cart = await rawResponse.json();
+    if (!added) {
+      alert('Sorry, we could not add this diamond right now. Please try again.');
+      _this.innerHTML = '<span class="text">Purchase without setting</span>';
+      _this.disabled = false;
+      return;
+    }
+
     await freeProductAddToCart();
     open_group_cart_drawer();
 
@@ -1665,9 +1682,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         if (diamondProducTprice) {
           const priceNum = parseFloat(item.price);
+          // #diamond-price sits inside <span class="price">{{ cart.currency.symbol }} …>,
+          // so the currency symbol is ALREADY rendered by the markup — don't prepend
+          // another "$" here (that caused the doubled "$ $17,500.00").
           diamondProducTprice.innerHTML = isNaN(priceNum)
             ? '-'
-            : '$' + priceNum.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            : priceNum.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         }
         if (diamondShippingContent) {
           diamondShippingContent.innerHTML = `${item.shipping || '-'}`;
