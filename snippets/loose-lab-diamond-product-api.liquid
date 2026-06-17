@@ -1372,10 +1372,21 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         const item = result.data;
-        // expose sku/handle on the "Purchase without setting" button so create-product-by-sku can run
+        // Expose the FULL spec set on the "Purchase without setting" button so the
+        // cart line carries every attribute (was only sku/handle -> only ~2 props).
+        // Mirrors the collection/drawer add (lab-created-diamonds.js initAddToCartButton).
         document.querySelectorAll('.md-button--add-to-cart').forEach(function (b) {
           b.dataset.optionSku = item.shopify_sku || '';
           b.dataset.optionHandle = item.shopify_handle || '';
+          b.dataset.productType = 'Lab Grown Diamond';      // -> Material
+          b.dataset.optionShape = item.shape || '';          // handler appends " Cut"
+          b.dataset.optionCut = item.cut || '';
+          b.dataset.optionCarat = item.carat || '';          // handler appends "ct"
+          b.dataset.optionColor = item.color || '';
+          b.dataset.optionClarity = item.clarity || '';
+          b.dataset.optionLab = item.lab || '';
+          b.dataset.optionCertNumber = item.cert_num || '';
+          b.dataset.productVendor = item.shopify_product_vendor || '';
         });
         console.log('Diamond title:', item.title);
 
