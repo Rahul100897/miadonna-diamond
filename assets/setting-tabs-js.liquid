@@ -2135,7 +2135,11 @@
 			diamond_sku: diamondSku,
 			ring_title: ringTitle,
 			combined_price: combinedPrice,
-			ring_image: opts.ringImage || ''
+			ring_image: opts.ringImage || '',
+			// Ring product + the SELECTED variant, so the backend clones the
+			// ring's metal + spec metafields onto the combined product.
+			ring_product_id: "{{ product.id }}",
+			ring_variant_id: opts.ringVariantId || ''
 		};
 		console.log('[combined] POST create-product-by-sku', combinedReqBody);
 		try {
@@ -2172,15 +2176,18 @@
 		// _groupId, _isMain, Metal, Size, Estimate Ship Date, etc.), then add the
 		// diamond. Cert Number is customer-visible; SKUs are "_"-prefixed (admin-only).
 		var props = Object.assign({}, ring);
+		// Diamond props using the existing order/fulfillment names & formats
+		// (matches order #40446: Material, Shape, carat:Xct, color:X color, ...).
 		props['Material'] = 'Lab Grown Diamond';
-		if (qd.shape)        { props['Stone Shape']   = qd.shape; }
-		if (qd.carat)        { props['Stone Carat']   = qd.carat + 'ctw'; }
-		if (qd.color)        { props['Stone Color']   = qd.color; }
-		if (qd.clarity)      { props['Stone Clarity'] = qd.clarity; }
-		if (qd.cut)          { props['Cut']           = qd.cut; }
-		if (qd.measurements) { props['Dimension']     = qd.measurements; }
-		if (qd.lab)          { props['Lab']           = qd.lab; }
-		if (qd.cert_num)     { props['Cert Number']   = qd.cert_num; }   // customer-visible
+		if (qd.shape)        { props['Shape']       = qd.shape + ' Cut'; }
+		if (qd.carat)        { props['carat']       = qd.carat + 'ct'; }
+		if (qd.color)        { props['color']       = qd.color + ' color'; }
+		if (qd.clarity)      { props['clarity']     = qd.clarity + ' clarity'; }
+		if (qd.measurements) { props['Dimension']   = qd.measurements; }
+		if (qd.cut)          { props['cut']         = qd.cut; }
+		if (qd.lab)          { props['lab']         = qd.lab; }
+		if (qd.cert_num)     { props['Cert Number'] = qd.cert_num; }   // customer-visible
+		if (qd.shopify_handle) { props['_handle']   = qd.shopify_handle; }
 		// admin-only (hidden in cart/checkout, still on the order):
 		if (diamondSku)      { props['_diamond_sku']  = diamondSku; }
 		if (ringSku)         { props['_setting_sku']  = ringSku; }
