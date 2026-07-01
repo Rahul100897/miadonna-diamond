@@ -71,8 +71,7 @@
     endif
   endfor
 %}
-{% comment %} {%- render 'lab-created-diamonds-steps' -%} {% endcomment %}
-
+{%- render 'lab-created-diamonds-steps' -%}
 <section
   class="
     section
@@ -120,7 +119,7 @@
     data-scroll-class="{{ animation }}"
   {% endif %}
 >
-  {% render 'product-diamond-setting' %}
+  {% comment %} {% render 'product-diamond-setting' %} {% endcomment %}
 </section>
 
 {%- comment -%}
