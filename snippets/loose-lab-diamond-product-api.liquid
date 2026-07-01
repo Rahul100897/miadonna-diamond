@@ -1336,10 +1336,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const apiUrl = `http://localhost/qd-app/items/${sku}`;
 
-    const mainSpecsWrapper = document.getElementById(
-        'diamond-lab-specs'
-    );
-
     const specsWrapper = document.getElementById(
         'diamond-specifications'
     );
@@ -1495,6 +1491,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             ? item.clarity.toUpperCase()
             : '-';
 
+        const dimensions = item.measurements ? `${item.measurements} MM` : '-';
+
         let certificateHtml = '-';
 
         if ( item.cert_num && item.cert_url ) {
@@ -1503,29 +1501,23 @@ document.addEventListener('DOMContentLoaded', async () => {
             certificateHtml = `#${item.cert_num}`;
         }
 
-        if (mainSpecsWrapper) {
-        mainSpecsWrapper.innerHTML = `
-            <div class="value heading-carat">
-                ${carat}
-            </div>
-
-            <div class="value heading-cut">
-                ${cut}
-            </div>
-
-            <div class="value heading-color">
-                ${color}
-            </div>
-
-            <div class="value heading-clarity">
-                ${clarity}
-            </div>
-
-            <div class="value heading-certificate">
-                ${certificateHtml}
-            </div>
-        `;
-        }
+        // Icon-card specs grid (loose-diamond-setting-tab-api.liquid) — each card's
+        // value is a standalone placeholder span, populated individually so the
+        // surrounding icon/badge/label markup (ported verbatim from the live theme)
+        // never has to be rebuilt in JS.
+        const specGridValues = {
+            'diamond-spec-carat': carat,
+            'diamond-spec-color': color,
+            'diamond-spec-clarity': clarity,
+            'diamond-spec-cut': cut,
+            'diamond-spec-dimensions': dimensions,
+        };
+        Object.keys(specGridValues).forEach(function (id) {
+            const el = document.getElementById(id);
+            if (el) { el.textContent = specGridValues[id]; }
+        });
+        const certificateSpecEl = document.getElementById('diamond-spec-certificate');
+        if (certificateSpecEl) { certificateSpecEl.innerHTML = certificateHtml; }
 
         /*
         |--------------------------------------------------------------------------
@@ -1697,6 +1689,15 @@ document.addEventListener('DOMContentLoaded', async () => {
           // so the currency symbol is ALREADY rendered by the markup — don't prepend
           // another "$" here (that caused the doubled "$ $17,500.00").
           diamondProducTprice.innerHTML = isNaN(priceNum)
+            ? '-'
+            : priceNum.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+        // Same convention: #diamond-add-to-bag-price sits after a Liquid-rendered
+        // {{ cart.currency.symbol }}, so only the number goes here.
+        const diamondAddToBagPrice = document.getElementById('diamond-add-to-bag-price');
+        if (diamondAddToBagPrice) {
+          const priceNum = parseFloat(item.price);
+          diamondAddToBagPrice.textContent = isNaN(priceNum)
             ? '-'
             : priceNum.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         }
