@@ -286,38 +286,35 @@
     {%- endfor -%}
 
     <div class="product-additional-information">
-          <setting-tabs class="setting-tabs-wrapper">
-            <div class="setting-tabs-buttons">
-              <button id="product-details" class="setting-tab-button product-details button-active">
-                  Product Details
-                </button>
-              <button
-                id="product-shipping"
-                class="setting-tab-button product-shipping"
-              >
-                Shipping And Returns
-              </button>
-              <button id="product-included" class="setting-tab-button product-included">Material & Quality</button>
-            </div>
-            <div id="product-details-content" class="setting-tab-content product-details-content tab-active">
+      <setting-tabs class="setting-tabs-wrapper">
+        <div class="pdp-accordion">
+          <div class="sub_footer-faq-item one-whole is-open">
+            <button class="sub_footer-accordion-title">
+              <span>Diamond Information</span>
+              <span class="icon icon-plus" data-icon="plus">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+                  <title>Plus</title>
+                  <g id="plus"><path d="M95,48H52V5a2,2,0,0,0-4,0V48H5a2,2,0,0,0,0,4H48V95a2,2,0,0,0,4,0V52H95a2,2,0,0,0,0-4Z"></path></g>
+                </svg>
+              </span>
+            </button>
+            <div class="sub_footer-accordion-content">
               <div class="products__specs-wrapper">
-                <div id="diamond-specifications" class="products__specs"></div>
-              </div>
-            </div>
-            <div
-              id="product-shipping-content"
-              class="setting-tab-content product-shipping-content"
-            >
-                <div class="dynamic-shipping-content" id="diamonds-shipping-content">
+                <div class="products__specs">
+                  <div id="diamond-specifications" class="products__specs-list"></div>
                 </div>
-            </div>
-            <div id="product-included-content" class="setting-tab-content product-included-content">
-              <div class="static-material-content" id="diamonds-material-content">
-                <p>Material & Quality - Content</p>
               </div>
             </div>
-          </setting-tabs>
+          </div>
         </div>
+      </setting-tabs>
+    </div>
+    {% comment %}
+      Shipping/Material tab content retired here to match the live theme
+      (loose-lab-diamond-product.liquid), which superseded the old 3-tab
+      Product Details/Shipping/Material UI with the single "Diamond
+      Information" accordion above.
+    {% endcomment %}
 
   </div>
 
@@ -1592,11 +1589,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         ];
 
-        let html = `
-            <div class="products__specs-wrapper">
-                <div class="products__specs">
-                    <ul class="products__specs-list">
-        `;
+        // specsWrapper is #diamond-specifications, the .products__specs-list div
+        // inside the "Diamond Information" accordion (loose-lab-diamond-product-api
+        // .liquid) — matches the live theme's post-redesign accordion markup
+        // (loose-lab-diamond-product.liquid), not the old products__specs-list <ul>.
+        let html = '';
 
         specs.forEach(spec => {
 
@@ -1614,9 +1611,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             ) {
 
                 html += `
-                    <li>
-                        <span>${spec.label}:</span>
-                        <span>
+                    <div class="style-accordion pdp-accordion-common">
+                        <span class="accordion-data-label">${spec.label}:</span>
+                        <span class="accordion-data-value">
                             <a
                                 href="${spec.certUrl}"
                                 target="_blank"
@@ -1625,26 +1622,20 @@ document.addEventListener('DOMContentLoaded', async () => {
                                 #${spec.value}
                             </a>
                         </span>
-                    </li>
+                    </div>
                 `;
 
             } else {
 
                 html += `
-                    <li>
-                        <span>${spec.label}:</span>
-                        <span>${spec.value}</span>
-                    </li>
+                    <div class="style-accordion pdp-accordion-common">
+                        <span class="accordion-data-label">${spec.label}:</span>
+                        <span class="accordion-data-value">${spec.value}</span>
+                    </div>
                 `;
             }
 
         });
-
-        html += `
-                    </ul>
-                </div>
-            </div>
-        `;
 
         specsWrapper.innerHTML = html;
 
@@ -1654,8 +1645,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         const skuElement = document.getElementById('diamond-sku');
         const diamondProducTtitle = document.getElementById('diamond-product-title');
         const diamondProducTprice = document.getElementById('diamond-price');
-        const diamondShippingContent = document.getElementById('diamonds-shipping-content');
-        const diamondMaterialContent = document.getElementById('diamonds-material-content');
 
         const imageSection = document.getElementById('product-image--section');
         const videoSection = document.getElementById('product-video--section');
@@ -1700,12 +1689,6 @@ document.addEventListener('DOMContentLoaded', async () => {
           diamondAddToBagPrice.textContent = isNaN(priceNum)
             ? '-'
             : priceNum.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-        }
-        if (diamondShippingContent) {
-          diamondShippingContent.innerHTML = `${item.shipping || '-'}`;
-        }
-        if (diamondMaterialContent) {
-          diamondMaterialContent.innerHTML = `${item.material_quality || '-'}`;
         }
 
          /*
