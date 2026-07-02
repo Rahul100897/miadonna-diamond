@@ -1827,6 +1827,17 @@ window.LB_GROWN_DIAMOND = function () {
                 if (el) el.textContent = (value && value.length > 0) ? value : '-';
             }
 
+            // shop.money_format on this store includes a trailing currency code
+            // (e.g. "$33,000 USD"), which the real product page's price/button
+            // text don't show. Strip it here rather than in the shared
+            // formatMoney(), since that would also affect the listing page.
+            function formatDiamondPrice(price) {
+                var formatted = window.LB_GROWN_DIAMOND.formatMoney(
+                    parseFloat(window.LB_GROWN_DIAMOND.priceInShopCurrency(price)) * 100
+                );
+                return formatted.replace(/\s+[A-Z]{2,4}$/, '');
+            }
+
             var title = productData.title || '';
             setText('loose-diamond-breadcrumb-title', title);
             setText('loose-diamond-title', title);
@@ -1835,9 +1846,7 @@ window.LB_GROWN_DIAMOND = function () {
 
             var priceEl = document.getElementById('loose-diamond-price');
             if (priceEl && productData.price) {
-                priceEl.textContent = window.LB_GROWN_DIAMOND.formatMoney(
-                    parseFloat(window.LB_GROWN_DIAMOND.priceInShopCurrency(productData.price)) * 100
-                );
+                priceEl.textContent = formatDiamondPrice(productData.price);
             }
 
             // Media: one photo + one video, same source fields as the listing/drawer.
@@ -1956,9 +1965,7 @@ window.LB_GROWN_DIAMOND = function () {
             if (addToCartBtn) {
                 var labelEl = document.getElementById('loose-diamond-add-to-cart-label');
                 if (labelEl && productData.price) {
-                    labelEl.textContent = 'Add to bag - ' + window.LB_GROWN_DIAMOND.formatMoney(
-                        parseFloat(window.LB_GROWN_DIAMOND.priceInShopCurrency(productData.price)) * 100
-                    );
+                    labelEl.textContent = 'Add to bag - ' + formatDiamondPrice(productData.price);
                 }
                 addToCartBtn.addEventListener('click', async function() {
                     var properties = { 'Material': 'Lab Grown Diamond' };

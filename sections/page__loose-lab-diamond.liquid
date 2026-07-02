@@ -262,28 +262,42 @@
   </ul>
 </section>
 
-      <div class="product_form price-affirm">
-        <div class="purchase-details">
-          <div class="purchase-details__buttons purchase-details__spb--false">
-            <div class="button-wrapper">
-              <button
-                type="button"
-                id="loose-diamond-add-to-cart"
-                class="action_button button button--secondary button--add-to-cart add_to_cart md-button--add-to-cart"
-              >
-                <span class="text" id="loose-diamond-add-to-cart-label">Add to bag</span>
-              </button>
-              <a
-                href="javascript:;"
-                id="loose-diamond-add-to-ring"
-                class="action_button button button--primary button--add-to-ring button--add-to-cart"
-              >
-                <span class="text">Add to ring</span>
-              </a>
+      {% comment %}
+        This exact wrapper chain (setting-tabs > lab-diamond-content > block--form >
+        product-form-container > product_form) is what the theme's CSS scopes the
+        button layout and ship-date/consult-shopper sizing to on the real product
+        page - without it the buttons render in raw DOM order and the consult
+        link overflows.
+      {% endcomment %}
+      <setting-tabs class="setting-tabs-wrapper">
+        <div id="lab-diamond-content" class="setting-tab-content lab-diamond-content tab-active">
+          <div class="settings-wrapper block--setting-tabs"></div>
+          <div class="block--form">
+            <div class="product-form-container">
+              <div class="product_form">
+                <div class="purchase-details">
+                  <div class="purchase-details__buttons purchase-details__spb--false">
+                    <div class="button-wrapper">
+                      <button
+                        type="button"
+                        id="loose-diamond-add-to-cart"
+                        class="action_button button button--secondary button--add-to-cart add_to_cart md-button--add-to-cart"
+                      >
+                        <span class="text" id="loose-diamond-add-to-cart-label">Add to bag</span>
+                      </button>
+                      <a
+                        href="javascript:;"
+                        id="loose-diamond-add-to-ring"
+                        class="action_button button button--primary button--add-to-ring button--add-to-cart"
+                      >
+                        <span class="text">Add to ring</span>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
 
       <div class="block--order-ship-date">
         <div class="order-ship-date">
@@ -299,6 +313,8 @@
 </svg>
 Consult with a Personal Shopper</a></div>
       </div>
+        </div>
+      </setting-tabs>
 
       <div class="product-additional-information">
         <setting-tabs class="setting-tabs-wrapper">
