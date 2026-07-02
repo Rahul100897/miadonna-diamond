@@ -20,60 +20,36 @@
       large-down--one-whole
     "
   >
-  <div class="product-gallery--background">
-      <div class="product-gallery">
+  <div class="pg-container new-loose-diamond">
 
-        <div id="product-image--section" class="block-active">
-          
-          <a id="diamond-image-link" href="javascript:;"
-            data-fancybox>
-            <div class="image__container">
-              <img
-                id="diamond-main-image"
-                src=""
-                alt=""
-              >
-            </div>
-          </a>
+    <div class="image__container pg-row-two pg-row-single" id="product-image--section">
+      <a id="diamond-image-link" href="" class="product-gallery__link" data-fancybox="product-gallery">
+        <div class="pg-cell">
+          <img
+            id="diamond-main-image"
+            src=""
+            alt=""
+          >
         </div>
+      </a>
+    </div>
 
-        <div id="product-video--section">
-          <div id="product-vimeo_video">
-            <div class="lazyframe canvas-video" data-ratio="9:16">
-              <iframe
-                id="diamond-video-frame"
-                frameborder="0"
-                scrolling="no"
-                src=""
-              ></iframe>
-            </div>
-          </div>
+    <div id="product-video--section" class="pg-row-two" style="display: none;">
+      <div id="product-vimeo_video" class="pg-cell is-video">
+        <div class="lazyframe canvas-video pg-cell" data-ratio="9:16">
+          <iframe
+            id="diamond-video-frame"
+            frameborder="0"
+            title="360 degree product view"
+            loading="lazy"
+            scrolling="no"
+            src=""
+          ></iframe>
         </div>
-
       </div>
     </div>
 
-
-
-      <ul class="buttons-wrapper" id="media-buttons">
-      <li class="button-item" id="image-button-wrapper">
-        <button
-          onClick="productImages('images')"
-          class="product-image--button media-button block-button-active"
-        >
-          Images
-        </button>
-      </li>
-
-      <li class="button-item" id="video-button-wrapper">
-        <button
-          onClick="productImages('video')"
-          class="product-video--button media-button"
-        >
-          Video
-        </button>
-      </li>
-    </ul>
+  </div>
   </div>
 
   <div
@@ -693,11 +669,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const diamondProducTtitle = document.getElementById('diamond-product-title');
         const diamondProducTprice = document.getElementById('diamond-price');
 
-        const imageSection = document.getElementById('product-image--section');
         const videoSection = document.getElementById('product-video--section');
-
-        const imageButton = document.getElementById('image-button-wrapper');
-        const videoButton = document.getElementById('video-button-wrapper');
 
         const image = document.getElementById('diamond-main-image');
         const imageLink = document.getElementById('diamond-image-link');
@@ -740,7 +712,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
          /*
           |--------------------------------------------------------------------------
-          | Image
+          | Gallery: still photo + 360 viewer shown as stacked cells (matching the
+          | live theme's .pg-container gallery for a real product's media), not as
+          | tabs — QD only ever gives one image_url + one video_url, so there's no
+          | multi-image library to switch between.
           |--------------------------------------------------------------------------
           */
           if (imageUrl) {
@@ -754,71 +729,20 @@ document.addEventListener('DOMContentLoaded', async () => {
                   imageLink.href = imageUrl;
               }
 
-              if (imageButton) {
-                  imageButton.style.display = '';
-              }
-
-          } else {
-
-              if (imageButton) {
-                  imageButton.style.display = 'none';
-              }
-
           }
 
-          /*
-          |--------------------------------------------------------------------------
-          | Video
-          |--------------------------------------------------------------------------
-          */
           if (videoUrl) {
 
               if (videoFrame) {
                   videoFrame.src = videoUrl;
               }
 
-              if (videoButton) {
-                  videoButton.style.display = '';
-              }
-
-          } else {
-
-              if (videoButton) {
-                  videoButton.style.display = 'none';
+              if (videoSection) {
+                  videoSection.style.display = '';
               }
 
           }
 
-          /*
-          |--------------------------------------------------------------------------
-          | Default Active Media
-          |--------------------------------------------------------------------------
-          | productImages() (assets/section-product.js) is the single source of
-          | truth for which of #product-image--section / #product-video--section
-          | is visible — it toggles the "block-active" class on both, removing it
-          | from whichever isn't selected. Setting inline style.display here too
-          | (as this used to) fights that class toggle and can leave both panels
-          | visible at once when a diamond has both an image and a video URL.
-          */
-          if (imageUrl) {
-
-              productImages('images');
-
-          } else if (videoUrl) {
-
-              productImages('video');
-          }
-
-            console.log({
-        imageSection,
-        videoSection,
-        imageButton,
-        videoButton,
-        image,
-        imageLink,
-        videoFrame
-    });
-        
       } catch (error) {
 
         console.error(
