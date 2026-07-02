@@ -754,19 +754,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                   imageLink.href = imageUrl;
               }
 
-              if (imageSection) {
-                  imageSection.style.display = '';
-              }
-
               if (imageButton) {
                   imageButton.style.display = '';
               }
 
           } else {
-
-              if (imageSection) {
-                  imageSection.style.display = 'none';
-              }
 
               if (imageButton) {
                   imageButton.style.display = 'none';
@@ -785,19 +777,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                   videoFrame.src = videoUrl;
               }
 
-              if (videoSection) {
-                  videoSection.style.display = '';
-              }
-
               if (videoButton) {
                   videoButton.style.display = '';
               }
 
           } else {
-
-              if (videoSection) {
-                  videoSection.style.display = 'none';
-              }
 
               if (videoButton) {
                   videoButton.style.display = 'none';
@@ -809,22 +793,22 @@ document.addEventListener('DOMContentLoaded', async () => {
           |--------------------------------------------------------------------------
           | Default Active Media
           |--------------------------------------------------------------------------
+          | productImages() (assets/section-product.js) is the single source of
+          | truth for which of #product-image--section / #product-video--section
+          | is visible — it toggles the "block-active" class on both, removing it
+          | from whichever isn't selected. Setting inline style.display here too
+          | (as this used to) fights that class toggle and can leave both panels
+          | visible at once when a diamond has both an image and a video URL.
           */
-          {% comment %} if (imageUrl && videoUrl) {
-
-              productImages('images');
-
-          } else if (imageUrl) {
+          if (imageUrl) {
 
               productImages('images');
 
           } else if (videoUrl) {
 
               productImages('video');
-          } {% endcomment %}
+          }
 
-        {% comment %} const videoFrame = document.getElementById('diamond-video-frame'); {% endcomment %}
-console.log('log here');
             console.log({
         imageSection,
         videoSection,
