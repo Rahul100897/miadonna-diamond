@@ -39,8 +39,8 @@ $slider_color_mobile && $slider_color_mobile.addCSS(`.tooltip::after{ transform:
 $slider_cut_mobile && $slider_cut_mobile.addCSS(`.mark-value{ text-transform: uppercase; }`);
 /* END */
 
-$slider_price.formatTooltipValue = (value) => Number(value).toLocaleString('en-US', { minimumFractionDigits: 2 });
-$slider_price_mobile.formatTooltipValue = (value) => Number(value).toLocaleString('en-US', { minimumFractionDigits: 2 });
+$slider_price && ($slider_price.formatTooltipValue = (value) => Number(value).toLocaleString('en-US', { minimumFractionDigits: 2 }));
+$slider_price_mobile && ($slider_price_mobile.formatTooltipValue = (value) => Number(value).toLocaleString('en-US', { minimumFractionDigits: 2 }));
 
 let ajaxCallDiamondListRunning = 'No', myCustomController = null, isQueryParams = 'No', totalResultIndex = 0;
 let ajaxPaginationClick = 'No';
