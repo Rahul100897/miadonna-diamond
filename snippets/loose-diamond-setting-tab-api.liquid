@@ -364,13 +364,11 @@
       </div>
     </div>
 
-    <div class="block--sku" style="padding: 0;">
-      <div class="order-ship-date">
-        <div style="width:26px;height:auto;"></div>
-        <p class="order-ship-text" style="font-size: 12px;">SKU:</p>
-        <p class="order-ship-date" id="diamond-sku" style="font-size: 12px;"></p>
-      </div>
-    </div>
+    {% comment %}
+      SKU now shown once, at the top of loose-lab-diamond-product-api.liquid's
+      .sku-review block (id="diamond-sku") — matches the live theme, which
+      also retired this duplicate SKU display here.
+    {% endcomment %}
 
     <div class="block--selected-ring-values">
       <div class="selected-ring-values">
