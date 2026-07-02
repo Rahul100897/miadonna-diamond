@@ -18,6 +18,15 @@
   {{- 'certificate-popup.css' | asset_url | stylesheet_tag -}}
 </noscript>
 
+{% comment %}
+  theme.liquid only loads Fancybox (CSS/JS) when `template contains 'product'`.
+  This is a page template, so it's skipped there - load it here instead. The
+  gallery below uses data-fancybox="product-gallery", the exact selector
+  common.js's Fancybox.bind() targets, so no extra JS init is needed.
+{% endcomment %}
+{{ 'fancyapps-fancybox.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'fancyapps-fancybox.js' | asset_url }}"></script>
+
 {% assign id = section.id %}
 {% assign width = section.settings.width | default: 'standard' %}
 {% assign padding_top = section.settings.padding_top | default: 40 %}
@@ -257,13 +266,6 @@
         <div class="purchase-details">
           <div class="purchase-details__buttons purchase-details__spb--false">
             <div class="button-wrapper">
-              <a
-                href="javascript:;"
-                id="loose-diamond-add-to-ring"
-                class="action_button button button--primary button--add-to-ring button--add-to-cart"
-              >
-                <span class="text">Add to ring</span>
-              </a>
               <button
                 type="button"
                 id="loose-diamond-add-to-cart"
@@ -271,6 +273,13 @@
               >
                 <span class="text" id="loose-diamond-add-to-cart-label">Add to bag</span>
               </button>
+              <a
+                href="javascript:;"
+                id="loose-diamond-add-to-ring"
+                class="action_button button button--primary button--add-to-ring button--add-to-cart"
+              >
+                <span class="text">Add to ring</span>
+              </a>
             </div>
           </div>
         </div>
@@ -329,7 +338,7 @@ Consult with a Personal Shopper</a></div>
 <div class="dmd-detail-filter" style="display:none;"></div>
 
 <script src="{{ 'lab-created-diamonds.js' | asset_url }}"
-  money-format="{{ shop.money_with_currency_format }}"
+  money-format="{{ shop.money_format }}"
   cart-currency-iso-code="{{ cart.currency.iso_code }}"
   defer
 ></script>

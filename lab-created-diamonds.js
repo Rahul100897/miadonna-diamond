@@ -1847,18 +1847,27 @@ window.LB_GROWN_DIAMOND = function () {
                 : `/apps/vdb-maidonna-inventory-app/public/no-images/${window.LB_GROWN_DIAMOND.handleize(productData.shape || '')}-loose.jpg`;
             var videoURL = productData.video_url?.length > 0 ? productData.video_url : '';
             if (mediaEl) {
+                // video_url is an interactive 360-viewer page (Vision360.html), not a
+                // playable video file, so it's embedded the same way the real product
+                // page embeds its 360 view: an iframe wrapped in a Fancybox lightbox
+                // trigger. data-fancybox="product-gallery" is the exact group name
+                // common.js's Fancybox.bind() targets.
                 mediaEl.innerHTML = `
-                    <div class="image__container pg-row-two pg-row-single">
-                      <a href="${mainImageURL}" class="product-gallery__link" data-fancybox="loose-diamond-gallery" title="${title}">
+                    <div class="image__container pg-row-two">
+                      <a href="${mainImageURL}" class="product-gallery__link" data-fancybox="product-gallery" title="${title}">
                         <div class="pg-cell"><img src="${mainImageURL}" alt="${title}" loading="eager"></div>
                       </a>
                     </div>
                     ${videoURL ? `
-                    <div class="image__container pg-row-two pg-row-single">
-                      <div class="pg-cell is-video">
-                        <video src="${videoURL}" controls playsinline style="width:100%;height:100%;object-fit:cover;"></video>
+                    <a data-fancybox="product-gallery" data-type="iframe" href="${videoURL}" class="video-popup-trigger">
+                      <div class="pg-row-two">
+                        <div class="pg-cell is-video">
+                          <div class="lazyframe canvas-video pg-cell" data-ratio="9:16" style="pointer-events:none;">
+                            <iframe frameborder="0" title="360 degree diamond view" loading="lazy" scrolling="no" data-src="${videoURL}" src="${videoURL}"></iframe>
+                          </div>
+                        </div>
                       </div>
-                    </div>` : ''}
+                    </a>` : ''}
                 `;
             }
 
