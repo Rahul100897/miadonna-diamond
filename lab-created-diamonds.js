@@ -327,7 +327,8 @@ window.LB_GROWN_DIAMOND = function () {
                 formData.append("sustainability", window.LB_GROWN_DIAMOND.config.sustainabilityValue);
                 formData.append("sustainability_data", sustainabilityData);
 
-                formData.append("quality", window.LB_GROWN_DIAMOND.config.qualityValue);
+                 //formData.append("quality", window.LB_GROWN_DIAMOND.config.qualityValue);
+                formData.append("quality", '');
                 formData.append("quality_data", qualityData);
 
                 formData.append("vendor", window.LB_GROWN_DIAMOND.config.vendorValue);
@@ -765,13 +766,43 @@ window.LB_GROWN_DIAMOND = function () {
                                     } else {
                                         productURL = `stone-handle=${diamondsArray?.shopify_handle}`;
                                     }
-
+                                   var removeRingSearchParams1 = '';
+                                      ['shape','_t',].forEach(function (item) {
+                                            removeRingSearchParams1 = window.LB_GROWN_DIAMOND.removeURLParameterNew(productURL, 'shape');
+                                        });
+                                    //     if(removeRingSearchParams1 !=''){
+                                    //         console.log(removeRingSearchParams1);
+                                    //    productURL = removeRingSearchParams1;
+                                    //    }
+                                  //  productURL.searchParams.delete('shape');
+                                   //let params = = new URLSearchParams(productURL);
+                                    // params.delete('shape');
+                                    // productURL = params;
+                                    // console.log(params);
+                                    //productURL += `&shape=${diamondsArray?.shape}`;
+                                     productURL = `shape=${diamondsArray?.shape}&${removeRingSearchParams1.replace('?','')}`
                                     let productTitle = [];
                                     if (diamondsArray?.carat) { productTitle.push(`${diamondsArray?.carat} Carat`); }
                                     if (diamondsArray?.shape) { productTitle.push(`${diamondsArray?.shape} Cut`); }
                                     if (diamondsArray?.color) { productTitle.push(`${diamondsArray?.color}`); }
                                     if (diamondsArray?.clarity) { productTitle.push(`${diamondsArray?.clarity}`); }
 
+                                    var ringurl = '';
+                                    if (window.LB_GROWN_DIAMOND.getUrlParameter('ring-handle') !== undefined) {
+                                        var ringurl = `/products/${staticHandle}?${productURL}&dyo=diamond_journey&stone-sku=${diamondsArray?.shopify_sku}${
+                                            window.LB_GROWN_DIAMOND.getUrlParameter('ring-handle') !== undefined
+                                                ? ''
+                                                : '#ring-products-section'
+                                        }`;
+                                         var timestamp = Math.floor(Date.now() / 1000);
+                                          ringurl += `&_cache=${timestamp}`;
+                                    } else {
+                                        var timestamp = Math.floor(Date.now() / 1000);
+                                        var ringurl = `/collections/lab-grown-diamond-engagement-rings/?viewdiamond=yes&shape=${diamondsArray?.shape} Cut&filter.p.m.custom.shape=${diamondsArray?.shape} Cut&stone-handle=${staticHandle1}&stone-sku=${diamondsArray?.shopify_sku}&dyo=diamond_journey`;
+                                        ringurl += `&_cache==${timestamp}`;
+                                        // += `#ring-products-section`;
+                                    }
+                          
                                     let mainImageURL = diamondsArray?.image_url?.length > 0 ? diamondsArray?.image_url : `/apps/vdb-maidonna-inventory-app/public/no-images/${window.LB_GROWN_DIAMOND.handleize(diamondsArray?.shape)}-loose.jpg`;
                                     let mainErrorSrc = `this.src='/apps/vdb-maidonna-inventory-app/public/no-images/${window.LB_GROWN_DIAMOND.handleize(diamondsArray?.shape)}-loose.jpg'`; // let errorSrc = "this.src='/apps/vdb-maidonna-inventory-app/images/no-image.png'";
                                     let imageURL = (document.querySelector('.vdb-set_tab_view.active').dataset.view == 'grid') ? mainImageURL : '';
@@ -779,9 +810,8 @@ window.LB_GROWN_DIAMOND = function () {
                                     
                                     htmlList = '';
                                     // ${videoURL?.length > 0 ? "" : 'style="background-image: url(' + mainImageURL + ');"'}
-                                    // vdb_stock_id is empty from the new API, which made every row share the id "pro-data-"
+                                    // vdb_stock_id is empty from the QD API, which made every row share the id "pro-data-"
                                     // (so the drawer always opened the first row). Use shopify_sku — populated + unique per stone.
-                                    //const dynamic_id = `pro-data-${diamondsArray.vdb_stock_id}`;
                                     const dynamic_id = `pro-data-${diamondsArray.shopify_sku}`;
                                       htmlList += `<tr class="vdb-lb-view-btn open-filter-btn" id="${dynamic_id}-list" data-producthandle="${staticHandle1}" data-sku="${diamondsArray?.shopify_sku}" data-href="/products/${staticHandle}?${productURL}&dyo=diamond_journey${window.LB_GROWN_DIAMOND.getUrlParameter('ring-handle') !== undefined ? '': '#ring-products-section'}" data-id="${dynamic_id}" data-video="${videoURL}" data-display="true">
                                         <td class="shape">
@@ -829,7 +859,7 @@ window.LB_GROWN_DIAMOND = function () {
                                     <div class="slider-section" role="region" aria-label="Product image carousel" aria-roledescription="carousel">
                                      
                                     <div class="product-slider">
-                                    <a href="${mainImageURL}" class="product-gallery__link" data-fancybox="${dynamic_id}" title="{{ image_alt | split: '|' | first | escape }}">
+                                    <a href="${mainImageURL}" class="product-gallery__link" data-fancybox="${dynamic_id}">
                                         <div>
                                         <img class="slide-img"
                                             src="${mainImageURL}" width="340"
@@ -1035,9 +1065,9 @@ window.LB_GROWN_DIAMOND = function () {
                                             <div class="filters-toggle-container">
                                             <div class="filter-buttons">
                                             
-                                                <a href="${window.LB_GROWN_DIAMOND.getUrlParameter('ring-handle') !== undefined ? '/products/' + staticHandle + '?' + productURL + '&stone-sku=' + diamondsArray?.shopify_sku + '&dyo=diamond_journey' : '/pages/loose-lab-grown-diamonds?sku=' + diamondsArray?.shopify_sku + '#ring-products-section'}" class="button button--secondary reset-button" aria-label="Add diamond to ring">${window.LB_GROWN_DIAMOND.getUrlParameter('ring-handle') !== undefined ? 'select': 'Add to ring'}</a>
+                                                <a href="${ringurl }" class="button button--secondary reset-button" aria-label="Add diamond to ring">${window.LB_GROWN_DIAMOND.getUrlParameter('ring-handle') !== undefined ? 'select': 'Add to ring'}</a>
                                                 ${window.LB_GROWN_DIAMOND.getUrlParameter('ring-handle') === undefined ? `<a href="javascript:;"  data-id="${diamondsArray?.shopify_sku}" class="button button--primary results-button add-to-cart vdb-add-to-cart" aria-label="Add to Bag">ADD TO BAG</a>`:""}
-                                                
+
                                             </div>
                                             <a target="_blank" href="/pages/loose-lab-grown-diamonds?sku=${diamondsArray?.shopify_sku}" class="viewdetail">VIEW DETAILS</a>
                                             </div>
@@ -1549,14 +1579,15 @@ window.LB_GROWN_DIAMOND = function () {
         },
         callProductDiamondDetail: async function (sku) {
             try {
-
                 // OLD (Shopify admin product JSON, by handle):
                 //const response = await fetch(`/products/${handle}?view=json`);
                 //const productData = await response.json();
                 //return productData;
                 // NEW (qd-app product detail API, by SKU - HTTP Basic auth):
                 const response = await fetch(`http://localhost/qd-app/items/${sku}`, { headers: { 'Authorization': 'Basic ' + btoa('admin:123456') } });
+
                 const productData = await response.json();
+
                 return productData?.data || null;
 
             } catch (error) {
@@ -1766,7 +1797,185 @@ window.LB_GROWN_DIAMOND = function () {
                     });
                 }
             }
-        }, 
+        },
+        initLooseDiamondPage: async function() {
+            // Populates page__loose-lab-diamond.liquid (the standalone diamond detail
+            // page reached via VIEW DETAILS / ?sku=...) entirely from the local API.
+            // No Shopify product needs to exist until Add to Bag is clicked.
+            var wrapper = document.getElementById('loose-diamond-detail-wrapper');
+            var notFound = document.getElementById('loose-diamond-not-found');
+            var sku = window.LB_GROWN_DIAMOND.getUrlParameter('sku');
+
+            function showNotFound() {
+                if (wrapper) wrapper.style.display = 'none';
+                if (notFound) notFound.style.display = 'block';
+            }
+
+            if (!sku || sku === true) {
+                showNotFound();
+                return;
+            }
+
+            var productData = await window.LB_GROWN_DIAMOND.callProductDiamondDetail(sku);
+            if (!productData) {
+                showNotFound();
+                return;
+            }
+
+            function setText(id, value) {
+                var el = document.getElementById(id);
+                if (el) el.textContent = (value && value.length > 0) ? value : '-';
+            }
+
+            var title = productData.title || '';
+            setText('loose-diamond-breadcrumb-title', title);
+            setText('loose-diamond-title', title);
+            if (title) document.title = title;
+            setText('loose-diamond-sku', productData.shopify_sku || sku);
+
+            var priceEl = document.getElementById('loose-diamond-price');
+            if (priceEl && productData.price) {
+                priceEl.textContent = window.LB_GROWN_DIAMOND.formatMoney(
+                    parseFloat(window.LB_GROWN_DIAMOND.priceInShopCurrency(productData.price)) * 100
+                );
+            }
+
+            // Media: one photo + one video, same source fields as the listing/drawer.
+            var mediaEl = document.getElementById('loose-diamond-media');
+            var mainImageURL = productData.image_url?.length > 0
+                ? productData.image_url
+                : `/apps/vdb-maidonna-inventory-app/public/no-images/${window.LB_GROWN_DIAMOND.handleize(productData.shape || '')}-loose.jpg`;
+            var videoURL = productData.video_url?.length > 0 ? productData.video_url : '';
+            if (mediaEl) {
+                mediaEl.innerHTML = `
+                    <div class="image__container pg-row-two pg-row-single">
+                      <a href="${mainImageURL}" class="product-gallery__link" data-fancybox="loose-diamond-gallery" title="${title}">
+                        <div class="pg-cell"><img src="${mainImageURL}" alt="${title}" loading="eager"></div>
+                      </a>
+                    </div>
+                    ${videoURL ? `
+                    <div class="image__container pg-row-two pg-row-single">
+                      <div class="pg-cell is-video">
+                        <video src="${videoURL}" controls playsinline style="width:100%;height:100%;object-fit:cover;"></video>
+                      </div>
+                    </div>` : ''}
+                `;
+            }
+
+            // Specs grid (6 cards)
+            var colorDisplay = (window.LB_GROWN_DIAMOND.config?.fancyValues?.length > 0 && productData.fancy_color?.length > 0)
+                ? productData.fancy_color
+                : productData.color;
+            setText('loose-diamond-spec-carat', productData.carat);
+            setText('loose-diamond-spec-color', colorDisplay);
+            setText('loose-diamond-spec-clarity', productData.clarity);
+            setText('loose-diamond-spec-cut', productData.cut);
+            setText('loose-diamond-spec-dimensions', productData.measurements ? `${productData.measurements} MM` : '');
+
+            var certLabel = productData.cert_num ? `#${productData.cert_num}` : '-';
+            var certEl = document.getElementById('loose-diamond-spec-certificate');
+            if (certEl) {
+                certEl.innerHTML = productData.cert_num
+                    ? `<a class="tdu" href="${productData.cert_url || ''}" target="_blank">${certLabel}</a>`
+                    : '-';
+            }
+
+            var ariaMap = {
+                'loose-diamond-spec-carat-card': `Carat weight ${productData.carat || '-'}`,
+                'loose-diamond-spec-color-card': `Color grade ${colorDisplay || '-'}`,
+                'loose-diamond-spec-clarity-card': `Clarity grade ${productData.clarity || '-'}`,
+                'loose-diamond-spec-cut-card': `Cut grade ${productData.cut || '-'}`,
+                'loose-diamond-spec-dimensions-card': `Dimensions ${productData.measurements || '-'}`,
+                'loose-diamond-spec-certificate-card': `Certificate ${certLabel}`
+            };
+            Object.keys(ariaMap).forEach(function(elId) {
+                var el = document.getElementById(elId);
+                if (el) el.setAttribute('aria-label', ariaMap[elId]);
+            });
+
+            // Diamond Information accordion - same field set/order as the proven
+            // grid-view "Additional Details" table in this file.
+            var infoList = document.getElementById('loose-diamond-info-list');
+            if (infoList) {
+                var rows = [
+                    ['Carat', productData.carat],
+                    ['Shape', productData.shape],
+                    ['Cut', productData.cut],
+                    ['Color', colorDisplay],
+                    ['Clarity', productData.clarity],
+                    // Sustainability/Culet: not present on the qd-app payload seen so far.
+                    // Left wired up in case the API adds them; rows are simply omitted otherwise.
+                    ['Sustainability', productData.sustainability],
+                    ['Certificate', productData.cert_num ? certLabel : ''],
+                    ['SKU', productData.shopify_sku || sku],
+                    ['Measurement', productData.measurements],
+                    ['Depth', productData.depth],
+                    ['Table %', productData.table],
+                    ['Polish', productData.polish],
+                    ['Symmetry', productData.symmetry],
+                    ['Culet', productData.culet],
+                    ['Fluorescence', productData.fluor],
+                    ['Length/Width Ratio', productData.l_w_ratio]
+                ];
+                infoList.innerHTML = rows
+                    .filter(function(row) { return row[1] && String(row[1]).length > 0; })
+                    .map(function(row) {
+                        return `<div class="style-accordion pdp-accordion-common">
+                            <span class="accordion-data-label">${row[0]}:</span>
+                            <span class="accordion-data-value">${row[0] === 'Certificate' ? `<a class="tdu" href="${productData.cert_url || ''}" target="_blank">${row[1]}</a>` : row[1]}</span>
+                        </div>`;
+                    })
+                    .join('');
+            }
+
+            // Add to ring: same URL shape as the listing rows' ringurl.
+            var shape = productData.shape || '';
+            var defaultCut = shape.length > 0
+                ? shape.split(' ').map(function(w) { return w.charAt(0).toUpperCase() + w.slice(1); }).join('+')
+                : '';
+            if (defaultCut.length > 0 && defaultCut.indexOf('Cut') === -1) defaultCut += '+Cut';
+            var ringBtn = document.getElementById('loose-diamond-add-to-ring');
+            if (ringBtn) {
+                var timestamp = Math.floor(Date.now() / 1000);
+                ringBtn.setAttribute('href',
+                    `/collections/lab-grown-diamond-engagement-rings/?viewdiamond=yes&shape=${encodeURIComponent(shape)} Cut&filter.p.m.custom.shape=${encodeURIComponent(shape)} Cut&stone-handle=${productData.shopify_handle || ''}&stone-sku=${productData.shopify_sku || sku}&dyo=diamond_journey&_cache=${timestamp}`
+                );
+            }
+
+            // Add to bag: create-or-update the Shopify product, then add it to cart.
+            var addToCartBtn = document.getElementById('loose-diamond-add-to-cart');
+            if (addToCartBtn) {
+                var labelEl = document.getElementById('loose-diamond-add-to-cart-label');
+                if (labelEl && productData.price) {
+                    labelEl.textContent = 'Add to bag - ' + window.LB_GROWN_DIAMOND.formatMoney(
+                        parseFloat(window.LB_GROWN_DIAMOND.priceInShopCurrency(productData.price)) * 100
+                    );
+                }
+                addToCartBtn.addEventListener('click', async function() {
+                    var properties = { 'Material': 'Lab Grown Diamond' };
+                    if (productData.shape) properties['shape'] = productData.shape + ' Cut';
+                    if (productData.cut) properties['cut'] = productData.cut;
+                    if (productData.carat) properties['carat'] = productData.carat + 'ct';
+                    if (productData.color) properties['color'] = productData.color;
+                    if (productData.clarity) properties['clarity'] = productData.clarity;
+                    if (productData.lab) properties['lab'] = productData.lab;
+                    if (productData.cert_num) properties['Cert Number'] = productData.cert_num;
+
+                    this.innerHTML = '<span class="btn-view">Processing...</span>';
+                    this.disabled = true;
+                    var variantId = await window.LB_GROWN_DIAMOND.createDiamondProduct(
+                        productData.shopify_sku || sku,
+                        productData.shopify_handle || ''
+                    );
+                    if (!variantId) {
+                        this.innerHTML = '<span class="text">Add to bag</span>';
+                        this.disabled = false;
+                        return;
+                    }
+                    await window.LB_GROWN_DIAMOND.addToCart(this, variantId, 1, properties);
+                });
+            }
+        },
         createDiamondProduct: async function(sku, handle) {
             // Creates the Shopify product/variant for an API diamond and returns its variant id.
             try {
@@ -1872,6 +2081,13 @@ window.LB_GROWN_DIAMOND = function () {
             }
             return url;
         },
+        removeURLParameterNew: function(url, parameter) {
+    const params = new URLSearchParams(url);
+
+    params.delete(parameter);
+ ignorePopState = true;
+    return params.toString() ? '?' + params.toString() : '';
+},
         loadGridImages: function(){
             if (document.getElementsByClassName('grid-item-filter-image')?.length > 0) {
                 let gridItemFilterImageElements = document.getElementsByClassName('grid-item-filter-image');
@@ -3884,9 +4100,6 @@ if(trdata){
          var certificateDelEls = document.querySelector( ".dmd-detail-filter")?.querySelectorAll(".certificate-del");
           var measurements = document.querySelector( ".dmd-detail-filter")?.querySelectorAll(".measurements");
 
-              // OLD (Shopify product by handle):
-              //var staticHandle = e.target.closest(".open-filter-btn").getAttribute("data-producthandle");
-              //var productData = await window.LB_GROWN_DIAMOND.callProductDiamondDetail(staticHandle);
               // NEW (qd-app detail API by SKU):
               var staticSku = e.target.closest(".open-filter-btn").getAttribute("data-sku");
  var productData = await window.LB_GROWN_DIAMOND.callProductDiamondDetail(staticSku);
